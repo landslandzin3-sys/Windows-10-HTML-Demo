@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulação Windows 10 Deluxe</title>
+  <style>
+    :root {
+      --taskbar-h: 48px;
+      --accent: #0078d7;
+      --accent-2: #2b88d8;
+      --taskbar: rgba(20, 20, 20, 0.72);
+      --taskbar-solid: rgba(28, 28, 28, 0.92);
+      --glass: rgba(255,255,255,0.16);
+      --panel-dark: rgba(32, 32, 32, 0.93);
+      --panel-mid: rgba(40, 40, 40, 0.86);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 16px 40px rgba(0,0,0,.28);
+      --shadow-soft: 0 8px 18px rgba(0,0,0,.18);
+      --text-light: #fff;
+      --text-dark: #111;
+      --win-bg: #ffffff;
+      --desktop-filter: rgba(255,255,255,0.03);
+      --wallpaper: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80');
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Segoe UI", Tahoma, sans-serif; background: #000; }
+    button, input, textarea, select { font: inherit; }
+    input, textarea { user-select: text; }
+    .screen { position: absolute; inset: 0; display: none; }
+    .screen.active { display: block; }
+    .hidden { display: none !important; }
+
+    /* Boot */
+    #bootScreen {
+      background: radial-gradient(circle at 50% 30%, #183f6a 0%, #081e36 48%, #031121 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      text-align: center;
+    }
+    .windows-logo {
+      width: 104px; height: 104px; position: relative; transform: perspective(400px) rotateY(-13deg);
+      filter: drop-shadow(0 0 30px rgba(0,164,239,.35));
+    }
+    .windows-logo::before, .windows-logo::after, .windows-logo span::before, .windows-logo span::after {
+      content: ""; position: absolute; background: #00a4ef;
+    }
+    .windows-logo::before { inset: 0 52% 52% 0; }
+    .windows-logo::after { inset: 0 0 52% 52%; }
+    .windows-logo span::before { inset: 52% 52% 0 0; }
+    .windows-logo span::after { inset: 52% 0 0 52%; }
+    .spinner { display: flex; gap: 9px; align-items: center; justify-content: center; }
+    .spinner span { width: 8px; height: 8px; border-radius: 50%; background: white; opacity: .22; animation: bounce 1.2s infinite ease-in-out; }
+    .spinner span:nth-child(2){animation-delay:.12s}.spinner span:nth-child(3){animation-delay:.24s}.spinner span:nth-child(4){animation-delay:.36s}.spinner span:nth-child(5){animation-delay:.48s}
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(.5); opacity: .25; } 40% { transform: scale(1); opacity: 1; } }
+    .boot-message { font-size: 26px; font-weight: 300; }
+    .boot-sub { color: rgba(255,255,255,.78); font-size: 15px; }
+
+    /* Lock/Login */
+    #loginScreen {
+      background-image: linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.52)), url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+    }
+    .lock-info { position: absolute; left: 48px; bottom: 70px; text-shadow: 0 4px 14px rgba(0,0,0,.45); transition: .35s; }
+    .lock-time { font-size: 72px; font-weight: 200; line-height: 1; }
+    .lock-date { font-size: 28px; font-weight: 300; margin-top: 8px; }
+    .login-panel {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.13); backdrop-filter: blur(7px); opacity: 0; pointer-events: none; transition: .35s;
+    }
+    .login-panel.visible { opacity: 1; pointer-events: auto; }
+    .login-box { width: 330px; text-align: center; color: white; }
+    .user-avatar {
+      width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 16px;
+      background: radial-gradient(circle at 50% 30%, #f7f7f7 18%, #c9d1d8 19%, #c9d1d8 33%, transparent 34%), radial-gradient(circle at 50% 78%, #c9d1d8 28%, transparent 29%), linear-gradient(180deg, #4d9df5, #1a66c9);
+      box-shadow: 0 10px 28px rgba(0,0,0,.4); border: 2px solid rgba(255,255,255,.4);
+    }
+    .login-name { font-size: 28px; font-weight: 300; margin-bottom: 16px; }
+    .password-row { display: flex; gap: 8px; }
+    .password-row input { flex: 1; padding: 12px; border: none; outline: none; background: rgba(255,255,255,.93); color: #111; }
+    .password-row button { width: 48px; border: none; background: rgba(255,255,255,.22); color: white; cursor: pointer; backdrop-filter: blur(3px); }
+    .password-hint { margin-top: 12px; color: rgba(255,255,255,.85); font-size: 13px; }
+    .power-btn { position: absolute; right: 24px; bottom: 18px; width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,.4); color: white; background: rgba(0,0,0,.25); cursor: pointer; }
+
+    /* Desktop */
+    #desktopScreen {
+      background-image: linear-gradient(var(--desktop-filter), var(--desktop-filter)), var(--wallpaper);
+      background-size: cover; background-position: center; overflow: hidden; transition: background-image .4s ease;
+    }
+    #desktopArea { position: absolute; inset: 0 0 var(--taskbar-h) 0; overflow: hidden; }
+    .desktop-icons { display: flex; flex-direction: column; gap: 14px; padding: 16px 10px; width: 104px; position: relative; z-index: 2; }
+    .desktop-icon {
+      width: 92px; padding: 6px 4px; border: 1px solid transparent; border-radius: 4px; text-align: center; color: white; text-shadow: 0 2px 8px rgba(0,0,0,.85); cursor: default;
+    }
+    .desktop-icon.selected, .desktop-icon:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.24); }
+    .desktop-icon .icon {
+      width: 40px; height: 40px; margin: 0 auto 6px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(210,220,235,.92)); color: #1f3a5f; font-size: 21px; box-shadow: 0 6px 16px rgba(0,0,0,.15);
+    }
+    .desktop-icon .label { font-size: 12px; line-height: 1.2; }
+    .selection-box {
+      position: absolute; border: 1px solid rgba(0,120,215,.8); background: rgba(0,120,215,.18); display: none; z-index: 3;
+    }
+
+    /* Taskbar */
+    .taskbar {
+      position: absolute; left: 0; right: 0; bottom: 0; height: var(--taskbar-h); background: var(--taskbar);
+      backdrop-filter: blur(18px); display: flex; align-items: center; color: white; z-index: 7000; box-shadow: 0 -1px 0 rgba(255,255,255,.08);
+    }
+    .tb-left, .tb-right { display: flex; align-items: center; height: 100%; }
+    .tb-left { min-width: 0; flex: 1; padding-left: 4px; }
+    .tb-btn, .task-app {
+      height: 100%; min-width: 46px; border: none; background: transparent; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .tb-btn:hover, .task-app:hover, .task-window-entry:hover { background: rgba(255,255,255,.11); }
+    .task-window-entry.active::after, .task-app.active::after {
+      content: ""; position: absolute; left: 8px; right: 8px; bottom: 2px; height: 3px; background: var(--accent);
+    }
+    .task-window-entry.minimized::after { background: rgba(255,255,255,.5); }
+    .start-logo { width: 16px; height: 16px; position: relative; }
+    .start-logo::before, .start-logo::after, .start-logo span::before, .start-logo span::after { content: ""; position: absolute; background: white; }
+    .start-logo::before { inset: 0 52% 52% 0; }.start-logo::after { inset: 0 0 52% 52%; }.start-logo span::before { inset: 52% 52% 0 0; }.start-logo span::after { inset: 52% 0 0 52%; }
+    .search-box { width: 220px; height: 34px; background: rgba(255,255,255,.9); color: #333; border-radius: 2px; display: flex; align-items: center; gap: 8px; padding: 0 12px; margin-left: 4px; font-size: 13px; }
+    #taskbarWindows { display: flex; align-items: center; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+    #taskbarWindows::-webkit-scrollbar { display: none; }
+    .task-window-entry { max-width: 180px; min-width: 48px; padding: 0 14px; color: white; border: none; background: transparent; height: 100%; cursor: pointer; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tb-right { gap: 12px; padding-right: 12px; font-size: 12px; }
+    .tray-icons { display: flex; gap: 10px; opacity: .92; }
+    .clock-wrap { text-align: center; min-width: 64px; cursor: pointer; }
+
+    /* Start menu */
+    .start-menu {
+      position: absolute; left: 0; bottom: var(--taskbar-h); width: 620px; height: 540px; background: rgba(25,25,25,.95); color: white; display: none; z-index: 6500; box-shadow: var(--shadow); backdrop-filter: blur(18px); grid-template-columns: 56px 190px 1fr;
+    }
+    .start-menu.open { display: grid; }
+    .start-rail { background: rgba(255,255,255,.03); display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 10px 0; }
+    .rail-btn { width: 100%; height: 42px; display: grid; place-items: center; color: #ddd; cursor: pointer; }
+    .rail-btn:hover { background: rgba(255,255,255,.08); }
+    .start-list { padding: 16px 8px 16px 14px; overflow: auto; }
+    .start-list h3, .start-tiles h3 { margin: 0 0 10px; font-size: 13px; color: #bbb; font-weight: 600; }
+    .start-item { padding: 10px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .start-item:hover { background: rgba(255,255,255,.08); }
+    .start-tiles { padding: 16px; }
+    .tile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tile {
+      min-height: 88px; background: linear-gradient(180deg, #1e84e8, #106ebe); padding: 12px; display: flex; align-items: end; font-weight: 600; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .tile.dark { background: linear-gradient(180deg, #444, #2d2d2d); }
+
+    .power-menu {
+      position: absolute; left: 12px; bottom: calc(var(--taskbar-h) + 56px); background: rgba(36,36,36,.96); backdrop-filter: blur(18px); color: white; min-width: 180px; display: none; z-index: 6700; box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,.08);
+    }
+    .power-menu.open { display: block; }
+    .power-item { padding: 12px 14px; cursor: pointer; }
+    .power-item:hover { background: rgba(255,255,255,.08); }
+
+    /* Windows */
+    .window {
+      position: absolute; width: 680px; height: 460px; background: var(--win-bg); border: 1px solid rgba(0,0,0,.15); box-shadow: var(--shadow); display: none; overflow: hidden; z-index: 100; min-width: 260px; min-height: 180px; border-radius: 2px; transition: box-shadow .15s ease, transform .12s ease;
+    }
+    .window.show { display: block; animation: pop .16s ease-out; }
+    @keyframes pop { from { transform: scale(.985); opacity: .72; } to { transform: scale(1); opacity: 1; } }
+    .window.maximized { inset: 0 0 var(--taskbar-h) 0 !important; width: auto !important; height: auto !important; border-radius: 0; }
+    .titlebar {
+      height: 32px; background: rgba(245,245,245,.92); border-bottom: 1px solid #ddd; display: flex; align-items: center; cursor: move; padding-left: 10px; color: #111;
+    }
+    .titlebar .title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .window-controls { margin-left: auto; display: flex; height: 100%; }
+    .win-btn { width: 46px; border: none; background: transparent; cursor: pointer; font-size: 14px; }
+    .win-btn:hover { background: rgba(0,0,0,.08); }
+    .win-btn.close:hover { background: #e81123; color: white; }
+    .window-body { height: calc(100% - 32px); background: white; position: relative; }
+    .resize-handle { position: absolute; background: transparent; z-index: 2; }
+    .resize-handle.e { top: 0; right: 0; width: 6px; height: 100%; cursor: ew-resize; }
+    .resize-handle.s { left: 0; bottom: 0; width: 100%; height: 6px; cursor: ns-resize; }
+    .resize-handle.se { right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+
+    .toolbar { display: flex; align-items: center; gap: 8px; padding: 8px; background: #f7f7f7; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+    .toolbar button, .toolbar select, .toolbar input[type="color"], .toolbar input[type="text"], .toolbar input[type="url"] { border: 1px solid #cfcfcf; background: white; padding: 6px 10px; }
+    textarea.notepad { width: 100%; height: calc(100% - 46px); border: none; outline: none; resize: none; padding: 12px; font-size: 15px; font-family: Consolas, monospace; }
+
+    .explorer { display: grid; grid-template-columns: 190px 1fr; height: 100%; }
+    .sidebar { background: #f6f6f6; border-right: 1px solid #ddd; padding: 10px; overflow-y: auto; }
+    .side-item { padding: 8px 10px; border-radius: 4px; cursor: pointer; }
+    .side-item:hover, .side-item.active { background: #ddeeff; }
+    .folder-view { padding: 14px; background: white; overflow: auto; }
+    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px; }
+    .folder-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px 10px; text-align: center; background: #fafafa; cursor: pointer; }
+    .folder-card:hover { background: #eef6ff; }
+
+    .edge-top { padding: 10px; background: #e9eef7; border-bottom: 1px solid #d3d9e3; display: flex; gap: 10px; }
+    .edge-address { flex: 1; border: 1px solid #c5cfde; background: white; padding: 8px 12px; }
+    .edge-body { padding: 0; background: linear-gradient(180deg, #ffffff, #f6f9ff); height: calc(100% - 52px); }
+    #edgeFrame { width: 100%; height: 100%; border: none; background: white; }
+    .edge-fallback { padding: 26px; }
+    .edge-card { max-width: 760px; margin: 0 auto; background: white; border: 1px solid #e1e6ef; padding: 22px; border-radius: 14px; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
+
+    .store { height: 100%; background: #f4f7fb; }
+    .store-header { padding: 16px; font-size: 22px; font-weight: 600; background: white; border-bottom: 1px solid #dbe3ef; }
+    .apps-grid { padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+    .app-card { background: white; border-radius: 12px; border: 1px solid #dbe3ef; padding: 14px; box-shadow: 0 5px 12px rgba(0,0,0,.06); }
+    .install-btn { margin-top: 12px; width: 100%; border: none; background: var(--accent); color: white; padding: 8px; cursor: pointer; }
+
+    .calc { height: 100%; display: flex; flex-direction: column; background: #f7f7f7; }
+    .calc-display { height: 90px; padding: 20px; text-align: right; font-size: 34px; background: white; border-bottom: 1px solid #ddd; overflow: hidden; }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #ddd; flex: 1; }
+    .calc-grid button { border: none; background: #fafafa; font-size: 20px; cursor: pointer; }
+    .calc-grid button:hover { background: #eee; }
+    .calc-grid button.op { background: #f0f0f0; }
+
+    .paint-wrap { height: 100%; display: flex; flex-direction: column; }
+    #paintCanvas { flex: 1; background: white; cursor: crosshair; }
+    .color-swatch { width: 22px; height: 22px; border: 1px solid #999; cursor: pointer; display: inline-block; }
+    .toolbar .group { display: flex; align-items: center; gap: 6px; }
+
+    .settings-layout { display: grid; grid-template-columns: 240px 1fr; height: 100%; }
+    .settings-nav { background: #f5f7fb; border-right: 1px solid #d9e2ef; padding: 12px; }
+    .settings-tab { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; }
+    .settings-tab.active, .settings-tab:hover { background: #dfeeff; }
+    .settings-content { padding: 18px; overflow: auto; }
+    .settings-section { display: none; }
+    .settings-section.active { display: block; }
+    .wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin-top: 16px; }
+    .wallpaper-thumb { height: 88px; border-radius: 10px; background-size: cover; background-position: center; border: 2px solid transparent; cursor: pointer; box-shadow: var(--shadow-soft); }
+    .wallpaper-thumb:hover { transform: translateY(-1px); }
+
+    .media-wrap { display: grid; grid-template-columns: 230px 1fr; height: 100%; }
+    .media-list { background: #f6f6f6; border-right: 1px solid #ddd; padding: 10px; overflow: auto; }
+    .media-item { padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 8px; background: white; border: 1px solid #e4e4e4; }
+    .media-item:hover, .media-item.active { background: #e9f4ff; }
+    .media-viewer { display: flex; align-items: center; justify-content: center; padding: 18px; background: #fff; overflow: auto; }
+    .media-viewer img, .media-viewer video { max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: var(--shadow-soft); }
+    .media-viewer audio { width: min(540px, 100%); }
+
+    .office-surface { padding: 16px; height: 100%; display: flex; flex-direction: column; background: #fbfbfb; }
+    .office-ribbon { display: flex; gap: 8px; padding: 8px; background: #f0f0f0; border: 1px solid #ddd; border-bottom: none; }
+    .office-editor { flex: 1; border: 1px solid #ddd; background: white; padding: 14px; overflow: auto; }
+    .office-editor[contenteditable="true"] { outline: none; }
+    .sheet-grid { display: grid; grid-template-columns: 60px repeat(8, 1fr); gap: 1px; background: #dcdcdc; }
+    .sheet-cell { min-height: 34px; background: white; padding: 8px; font-size: 13px; }
+    .slide-thumb { width: 180px; aspect-ratio: 16/9; border: 1px solid #ccc; background: linear-gradient(135deg,#0078d7,#48b4ff); color: white; display: grid; place-items: center; border-radius: 10px; margin-bottom: 14px; font-weight: 600; }
+
+    .action-center {
+      position: absolute; right: 0; top: 0; bottom: var(--taskbar-h); width: 320px; background: rgba(32,32,32,.94); backdrop-filter: blur(22px); color: white; transform: translateX(100%); transition: .28s ease; z-index: 6600; box-shadow: -8px 0 20px rgba(0,0,0,.24);
+      display: flex; flex-direction: column;
+    }
+    .action-center.open { transform: translateX(0); }
+    .ac-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,.08); font-weight: 600; }
+    .ac-body { padding: 14px; overflow: auto; flex: 1; }
+    .notif { background: rgba(255,255,255,.06); border-left: 3px solid var(--accent); padding: 12px; margin-bottom: 10px; }
+    .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+    .quick-btn { padding: 14px 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.06); text-align: center; border-radius: 10px; }
+
+    .context-menu { position: absolute; background: #f8f8f8; border: 1px solid #cfcfcf; box-shadow: 0 10px 20px rgba(0,0,0,.2); display: none; z-index: 8000; min-width: 180px; }
+    .context-item { padding: 10px 14px; cursor: pointer; }
+    .context-item:hover { background: #e5f1fb; }
+
+    .toast { position: absolute; right: 20px; bottom: 66px; background: rgba(30,30,30,.92); color: white; padding: 12px 14px; border-left: 3px solid var(--accent); box-shadow: var(--shadow); display: none; z-index: 9000; }
+
+    @media (max-width: 980px) {
+      .start-menu { width: 100%; height: calc(100% - var(--taskbar-h)); grid-template-columns: 52px 1fr; }
+      .start-tiles { display: none; }
+      .search-box { width: 140px; }
+      .window { width: 94vw; height: 72vh; }
+      .lock-time { font-size: 54px; }
+      .settings-layout, .media-wrap, .explorer { grid-template-columns: 1fr; }
+      .settings-nav, .media-list, .sidebar { border-right: none; border-bottom: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="startupAudio" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d1718ab835.mp3?filename=interface-start-110102.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="bootScreen" class="screen active">
+    <div class="windows-logo"><span></span></div>
+    <div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="boot-message" id="bootMessage">Preparando o Windows</div>
+    <div class="boot-sub">Isso pode levar alguns minutos. Não desligue o computador.</div>
+  </div>
+
+  <div id="loginScreen" class="screen">
+    <div class="lock-info" id="lockInfo">
+      <div class="lock-time" id="lockTime">00:00</div>
+      <div class="lock-date" id="lockDate">segunda-feira, 1 de janeiro</div>
+    </div>
+    <div class="login-panel" id="loginPanel">
+      <div class="login-box">
+        <div class="user-avatar"></div>
+        <div class="login-name">Usuário</div>
+        <div class="password-row">
+          <input id="passwordInput" type="password" placeholder="Senha" />
+          <button id="loginBtn">→</button>
+        </div>
+        <div class="password-hint">Qualquer senha funciona</div>
+      </div>
+    </div>
+    <button class="power-btn" id="powerBtn" title="Energia">⏻</button>
+  </div>
+
+  <div id="desktopScreen" class="screen">
+    <div id="desktopArea">
+      <div class="desktop-icons" id="desktopIcons">
+        <div class="desktop-icon" data-app="explorer" data-label="Este Computador"><div class="icon">🖥️</div><div class="label">Este Computador</div></div>
+        <div class="desktop-icon" data-app="recycle" data-label="Lixeira"><div class="icon">🗑️</div><div class="label">Lixeira</div></div>
+        <div class="desktop-icon" data-app="documents" data-label="Documentos"><div class="icon">📄</div><div class="label">Documentos</div></div>
+        <div class="desktop-icon" data-app="media" data-label="Mídia"><div class="icon">🎞️</div><div class="label">Mídia</div></div>
+        <div class="desktop-icon" data-app="settings" data-label="Configurações"><div class="icon">⚙️</div><div class="label">Configurações</div></div>
+        <div class="desktop-icon" data-app="word" data-label="Word"><div class="icon">🟦</div><div class="label">Word</div></div>
+        <div class="desktop-icon" data-app="excel" data-label="Excel"><div class="icon">🟩</div><div class="label">Excel</div></div>
+        <div class="desktop-icon" data-app="powerpoint" data-label="PowerPoint"><div class="icon">🟧</div><div class="label">PowerPoint</div></div>
+      </div>
+
+      <div id="selectionBox" class="selection-box"></div>
+      <div id="contextMenu" class="context-menu">
+        <div class="context-item" data-action="refresh">Atualizar</div>
+        <div class="context-item" data-action="new">Novo</div>
+        <div class="context-item" data-action="personalize">Personalizar</div>
+      </div>
+      <div id="toast" class="toast"></div>
+    </div>
+
+    <div id="startMenu" class="start-menu">
+      <div class="start-rail">
+        <div class="rail-btn" title="Usuário">👤</div>
+        <div class="rail-btn" title="Configurações" data-open="settings">⚙️</div>
+        <div class="rail-btn" title="Energia" id="startPower">⏻</div>
+      </div>
+      <div class="start-list">
+        <h3>Mais usados</h3>
+        <div class="start-item" data-open="notepad">📝 Bloco de Notas</div>
+        <div class="start-item" data-open="paint">🎨 Paint</div>
+        <div class="start-item" data-open="calculator">🧮 Calculadora</div>
+        <div class="start-item" data-open="explorer">📁 Explorador de Arquivos</div>
+        <div class="start-item" data-open="edge">🌐 Microsoft Edge</div>
+        <div class="start-item" data-open="store">🛍️ Windows Store</div>
+        <div class="start-item" data-open="settings">⚙️ Configurações</div>
+        <div class="start-item" data-open="media">🎧 Fotos & Mídia</div>
+        <div class="start-item" data-open="word">🟦 Word</div>
+        <div class="start-item" data-open="excel">🟩 Excel</div>
+        <div class="start-item" data-open="powerpoint">🟧 PowerPoint</div>
+      </div>
+      <div class="start-tiles">
+        <h3>Fixado</h3>
+        <div class="tile-grid">
+          <div class="tile" data-open="edge">Microsoft Edge</div>
+          <div class="tile dark" data-open="store">Store</div>
+          <div class="tile dark" data-open="explorer">Arquivos</div>
+          <div class="tile" data-open="calculator">Calculadora</div>
+          <div class="tile" data-open="paint">Paint</div>
+          <div class="tile dark" data-open="settings">Configurações</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="powerMenu" class="power-menu">
+      <div class="power-item" data-power="sleep">Suspender</div>
+      <div class="power-item" data-power="restart">Reiniciar</div>
+      <div class="power-item" data-power="shutdown">Desligar</div>
+    </div>
+
+    <!-- Notepad -->
+    <div class="window" id="win-notepad" data-app="notepad" data-title="Bloco de Notas" style="left:120px; top:70px; width:680px; height:460px;">
+      <div class="titlebar"><div class="title">Bloco de Notas</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body"><div class="toolbar"><button id="saveNoteBtn">Salvar</button><button id="clearNoteBtn">Limpar</button></div><textarea id="notepadArea" class="notepad" spellcheck="false" placeholder="Digite aqui..."></textarea></div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Paint -->
+    <div class="window" id="win-paint" data-app="paint" data-title="Paint" style="left:170px; top:95px; width:760px; height:520px;">
+      <div class="titlebar"><div class="title">Paint</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body paint-wrap">
+        <div class="toolbar">
+          <div class="group"><button id="brushTool">Pincel</button><button id="eraserTool">Borracha</button><button id="clearCanvasBtn">Limpar</button></div>
+          <div class="group"><label>Tamanho <input id="brushSize" type="range" min="2" max="30" value="4" /></label></div>
+          <div class="group"><span class="color-swatch" style="background:#000" data-color="#000000"></span><span class="color-swatch" style="background:#ff0000" data-color="#ff0000"></span><span class="color-swatch" style="background:#008000" data-color="#008000"></span><span class="color-swatch" style="background:#0000ff" data-color="#0000ff"></span><span class="color-swatch" style="background:#ffff00" data-color="#ffff00"></span><span class="color-swatch" style="background:#ff69b4" data-color="#ff69b4"></span></div>
+        </div>
+        <canvas id="paintCanvas"></canvas>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="window" id="win-calculator" data-app="calculator" data-title="Calculadora" style="left:240px; top:115px; width:340px; height:500px;">
+      <div class="titlebar"><div class="title">Calculadora</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body calc"><div class="calc-display" id="calcDisplay">0</div><div class="calc-grid" id="calcGrid"></div></div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Explorer -->
+    <div class="window" id="win-explorer" data-app="explorer" data-title="Explorador de Arquivos" style="left:280px; top:90px; width:820px; height:540px;">
+      <div class="titlebar"><div class="title">Explorador de Arquivos</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body explorer">
+        <div class="sidebar" id="explorerSidebar">
+          <div class="side-item active" data-folder="Documentos">Documentos</div>
+          <div class="side-item" data-folder="Imagens">Imagens</div>
+          <div class="side-item" data-folder="Músicas">Músicas</div>
+          <div class="side-item" data-folder="Vídeos">Vídeos</div>
+          <div class="side-item" data-folder="Lixeira">Lixeira</div>
+        </div>
+        <div class="folder-view"><h3 id="folderTitle">Documentos</h3><div id="folderGrid" class="folder-grid"></div></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Edge -->
+    <div class="window" id="win-edge" data-app="edge" data-title="Microsoft Edge" style="left:140px; top:60px; width:940px; height:590px;">
+      <div class="titlebar"><div class="title">Microsoft Edge</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body">
+        <div class="edge-top"><input class="edge-address" id="edgeAddress" placeholder="Pesquisar na Web ou digitar endereço" /><button id="edgeGoBtn">Ir</button><button id="edgeExternalBtn">Abrir fora</button></div>
+        <div class="edge-body" id="edgeBody">
+          <iframe id="edgeFrame" src="about:blank"></iframe>
+          <div class="edge-fallback" id="edgeFallback">
+            <div class="edge-card">
+              <h2>Microsoft Edge</h2>
+              <p>Este navegador tenta abrir sites em um iframe. Alguns sites oficiais, como o YouTube, costumam bloquear incorporação por segurança.</p>
+              <p>Nesses casos, use <strong>Abrir fora</strong> para abrir em nova aba.</p>
+              <p>Sugestões: <code>https://www.youtube.com</code>, <code>https://example.com</code>, <code>https://wikipedia.org</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Store -->
+    <div class="window" id="win-store" data-app="store" data-title="Windows Store" style="left:210px; top:80px; width:820px; height:540px;">
+      <div class="titlebar"><div class="title">Windows Store</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body store">
+        <div class="store-header">Loja</div>
+        <div class="apps-grid">
+          <div class="app-card"><strong>Fotos Plus</strong><p>Editor de imagens fictício.</p><button class="install-btn">Instalar</button></div>
+          <div class="app-card"><strong>MúsicaBox</strong><p>Player moderno de músicas.</p><button class="install-btn">Instalar</button></div>
+          <div class="app-card"><strong>Clima 360</strong><p>Previsão do tempo estilizada.</p><button class="install-btn">Instalar</button></div>
+          <div class="app-card"><strong>Studio Notes</strong><p>Bloco de notas avançado.</p><button class="install-btn">Instalar</button></div>
+          <div class="app-card"><strong>Pixel Draw</strong><p>Ferramenta de desenho criativa.</p><button class="install-btn">Instalar</button></div>
+          <div class="app-card"><strong>Game Hub</strong><p>Central gamer fictícia.</p><button class="install-btn">Instalar</button></div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="window" id="win-settings" data-app="settings" data-title="Configurações" style="left:220px; top:85px; width:860px; height:560px;">
+      <div class="titlebar"><div class="title">Configurações</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body settings-layout">
+        <div class="settings-nav" id="settingsNav">
+          <div class="settings-tab active" data-tab="personalization">Personalização</div>
+          <div class="settings-tab" data-tab="system">Sistema</div>
+          <div class="settings-tab" data-tab="about">Sobre</div>
+        </div>
+        <div class="settings-content">
+          <div class="settings-section active" data-section="personalization">
+            <h2>Plano de fundo</h2>
+            <p>Escolha um wallpaper.</p>
+            <div class="wallpaper-grid" id="wallpaperGrid"></div>
+          </div>
+          <div class="settings-section" data-section="system">
+            <h2>Sistema</h2>
+            <p>Som de inicialização: <button id="playStartupBtn">Reproduzir</button></p>
+            <p>Centro de Ações: <button id="openActionCenterBtn">Abrir</button></p>
+            <p>Energia: use o menu de energia do Iniciar para Suspender, Reiniciar e Desligar.</p>
+          </div>
+          <div class="settings-section" data-section="about">
+            <h2>Sobre este PC</h2>
+            <p><strong>Nome:</strong> Windows 10 Deluxe Simulator</p>
+            <p><strong>Versão:</strong> HTML Edition</p>
+            <p><strong>Recursos:</strong> Edge, Office, Mídia, Paint, Explorador, Lixeira e mais.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Media viewer -->
+    <div class="window" id="win-media" data-app="media" data-title="Fotos & Mídia" style="left:240px; top:90px; width:900px; height:560px;">
+      <div class="titlebar"><div class="title">Fotos & Mídia</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body media-wrap">
+        <div class="media-list" id="mediaList"></div>
+        <div class="media-viewer" id="mediaViewer"><div>Escolha um item à esquerda.</div></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Recycle bin -->
+    <div class="window" id="win-recycle" data-app="recycle" data-title="Lixeira" style="left:300px; top:110px; width:620px; height:420px;">
+      <div class="titlebar"><div class="title">Lixeira</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body">
+        <div class="toolbar"><button id="emptyRecycleBtn">Esvaziar Lixeira</button><button id="restoreRecycleBtn">Restaurar tudo</button></div>
+        <div class="folder-view"><h3>Itens excluídos</h3><div id="recycleGrid" class="folder-grid"></div></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Word -->
+    <div class="window" id="win-word" data-app="word" data-title="Word" style="left:170px; top:80px; width:880px; height:560px;">
+      <div class="titlebar"><div class="title">Word</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body office-surface">
+        <div class="office-ribbon"><button data-format="bold">Negrito</button><button data-format="italic">Itálico</button><button data-format="underline">Sublinhado</button><button id="saveWordBtn">Salvar</button></div>
+        <div class="office-editor" id="wordEditor" contenteditable="true"><h2>Documento sem título</h2><p>Escreva aqui...</p></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Excel -->
+    <div class="window" id="win-excel" data-app="excel" data-title="Excel" style="left:210px; top:85px; width:900px; height:560px;">
+      <div class="titlebar"><div class="title">Excel</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body office-surface">
+        <div class="office-ribbon"><button id="fillSheetBtn">Preencher exemplo</button></div>
+        <div class="office-editor" style="padding:0;">
+          <div class="sheet-grid" id="excelGrid"></div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- PowerPoint -->
+    <div class="window" id="win-powerpoint" data-app="powerpoint" data-title="PowerPoint" style="left:230px; top:95px; width:860px; height:540px;">
+      <div class="titlebar"><div class="title">PowerPoint</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body office-surface">
+        <div class="office-ribbon"><button id="addSlideBtn">Nova slide</button></div>
+        <div class="office-editor"><div id="slidesList"><div class="slide-thumb">Slide 1</div></div></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <div id="actionCenter" class="action-center">
+      <div class="ac-header">Centro de Ações</div>
+      <div class="ac-body" id="actionCenterBody">
+        <div class="notif">Bem-vindo de volta ao seu Windows 10 em HTML.</div>
+        <div class="notif">As janelas agora podem ser minimizadas para a barra de tarefas.</div>
+        <div class="notif">Você pode trocar o wallpaper em Configurações &gt; Personalização.</div>
+        <div class="quick-actions"><div class="quick-btn">Modo avião</div><div class="quick-btn">Rede</div><div class="quick-btn">Som</div><div class="quick-btn">Brilho</div><div class="quick-btn">Bluetooth</div><div class="quick-btn">Todas as config.</div></div>
+      </div>
+    </div>
+
+    <div class="taskbar">
+      <div class="tb-left">
+        <button class="tb-btn" id="startButton" title="Iniciar"><div class="start-logo"><span></span></div></button>
+        <div class="search-box">🔎 Digite aqui para pesquisar</div>
+        <button class="task-app" data-open="edge" id="task-edge" title="Edge">🌐</button>
+        <button class="task-app" data-open="explorer" id="task-explorer" title="Explorador">📁</button>
+        <button class="task-app" data-open="store" id="task-store" title="Store">🛍️</button>
+        <div id="taskbarWindows"></div>
+      </div>
+      <div class="tb-right">
+        <div class="tray-icons">📶 🔊 🔋</div>
+        <div class="clock-wrap" id="actionCenterToggle"><div id="taskTime">00:00</div><div id="taskDate">01/01/2026</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const screens = {
+      boot: document.getElementById('bootScreen'),
+      login: document.getElementById('loginScreen'),
+      desktop: document.getElementById('desktopScreen'),
+    };
+
+    const state = {
+      highestZ: 200,
+      activeWindow: null,
+      paintMode: 'brush',
+      paintColor: '#000000',
+      paintSize: 4,
+      recycleBin: JSON.parse(localStorage.getItem('win10_recycle') || '[]'),
+      explorerFolder: 'Documentos',
+      selectedDesktopIcons: new Set(),
+      sleepOverlay: null,
+      powerMenuOpen: false,
+    };
+
+    const bootMessages = ['Preparando o Windows', 'Configurando dispositivos', 'Instalando recursos', 'Quase pronto'];
+    const wallpapers = [
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80'
+    ];
+
+    const folderData = {
+      'Documentos': [
+        { name: 'Trabalho.docx', type: 'doc' },
+        { name: 'Lista.txt', type: 'txt' },
+        { name: 'Projeto.pdf', type: 'pdf' },
+        { name: 'Ideias.md', type: 'txt' }
+      ],
+      'Imagens': [
+        { name: 'Aurora.jpg', type: 'image', src: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80' },
+        { name: 'Montanha.jpg', type: 'image', src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80' }
+      ],
+      'Músicas': [
+        { name: 'Interface.mp3', type: 'audio', src: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_d1718ab835.mp3?filename=interface-start-110102.mp3' },
+        { name: 'Calm.mp3', type: 'audio', src: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946f3f0d26.mp3?filename=ambient-piano-logo-116199.mp3' }
+      ],
+      'Vídeos': [
+        { name: 'Flowers.mp4', type: 'video', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
+        { name: 'River.mp4', type: 'video', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/river.mp4' }
+      ],
+      'Lixeira': []
+    };
+
+    const mediaItems = [...folderData['Imagens'], ...folderData['Músicas'], ...folderData['Vídeos']];
+
+    const loginPanel = document.getElementById('loginPanel');
+    const lockInfo = document.getElementById('lockInfo');
+    const lockTime = document.getElementById('lockTime');
+    const lockDate = document.getElementById('lockDate');
+    const taskTime = document.getElementById('taskTime');
+    const taskDate = document.getElementById('taskDate');
+    const startMenu = document.getElementById('startMenu');
+    const powerMenu = document.getElementById('powerMenu');
+    const startButton = document.getElementById('startButton');
+    const desktopArea = document.getElementById('desktopArea');
+    const desktopIcons = document.getElementById('desktopIcons');
+    const contextMenu = document.getElementById('contextMenu');
+    const toast = document.getElementById('toast');
+    const taskbarWindows = document.getElementById('taskbarWindows');
+    const selectionBox = document.getElementById('selectionBox');
+    const actionCenter = document.getElementById('actionCenter');
+    const actionCenterBody = document.getElementById('actionCenterBody');
+    const startupAudio = document.getElementById('startupAudio');
+
+    function showScreen(name) {
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      screens[name].classList.add('active');
+    }
+
+    function startBootSequence() {
+      showScreen('boot');
+      let idx = 0;
+      document.getElementById('bootMessage').textContent = bootMessages[0];
+      const bootInterval = setInterval(() => {
+        idx++;
+        if (idx < bootMessages.length) document.getElementById('bootMessage').textContent = bootMessages[idx];
+      }, 1500);
+      setTimeout(() => {
+        clearInterval(bootInterval);
+        showScreen('login');
+      }, 6200);
+    }
+
+    function updateClocks() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const dateLong = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+      const dateShort = now.toLocaleDateString('pt-BR');
+      lockTime.textContent = time;
+      lockDate.textContent = dateLong;
+      taskTime.textContent = time;
+      taskDate.textContent = dateShort;
+    }
+
+    function addNotification(message) {
+      const n = document.createElement('div');
+      n.className = 'notif';
+      n.textContent = message;
+      actionCenterBody.prepend(n);
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.style.display = 'none', 2000);
+    }
+
+    function applyWallpaper(url) {
+      document.documentElement.style.setProperty('--wallpaper', `url('${url}')`);
+      localStorage.setItem('win10_wallpaper', url);
+      showToast('Plano de fundo alterado.');
+      addNotification('O wallpaper foi alterado com sucesso.');
+    }
+
+    function initWallpaper() {
+      const saved = localStorage.getItem('win10_wallpaper') || wallpapers[0];
+      applyWallpaper(saved);
+      const grid = document.getElementById('wallpaperGrid');
+      wallpapers.forEach(url => {
+        const item = document.createElement('div');
+        item.className = 'wallpaper-thumb';
+        item.style.backgroundImage = `url('${url}')`;
+        item.addEventListener('click', () => applyWallpaper(url));
+        grid.appendChild(item);
+      });
+    }
+
+    function saveRecycle() {
+      localStorage.setItem('win10_recycle', JSON.stringify(state.recycleBin));
+    }
+
+    function iconForType(type) {
+      return ({ image: '🖼️', audio: '🎵', video: '🎬', txt: '📄', doc: '📘', pdf: '📕', recycle: '🗑️' }[type] || '📄');
+    }
+
+    function renderFolder(folder) {
+      state.explorerFolder = folder;
+      document.querySelectorAll('.side-item').forEach(el => el.classList.toggle('active', el.dataset.folder === folder));
+      document.getElementById('folderTitle').textContent = folder;
+      const grid = document.getElementById('folderGrid');
+      grid.innerHTML = '';
+      const items = folder === 'Lixeira' ? state.recycleBin : folderData[folder];
+      (items || []).forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'folder-card';
+        card.innerHTML = `<div style="font-size:32px;margin-bottom:8px;">${iconForType(item.type)}</div><div>${item.name}</div>`;
+        if (folder === 'Lixeira') {
+          card.addEventListener('dblclick', () => {
+            const restored = state.recycleBin.splice(index, 1)[0];
+            folderData['Documentos'].push(restored);
+            saveRecycle();
+            renderFolder('Lixeira');
+            showToast('Item restaurado para Documentos.');
+          });
+        } else {
+          card.addEventListener('dblclick', () => openFile(item));
+          card.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            moveToRecycle(item, folder);
+          });
+        }
+        grid.appendChild(card);
+      });
+      if (!(items || []).length) grid.innerHTML = '<div>Nenhum item aqui.</div>';
+    }
+
+    function moveToRecycle(item, folder) {
+      const arr = folderData[folder];
+      const idx = arr.indexOf(item);
+      if (idx >= 0) {
+        state.recycleBin.push(arr.splice(idx, 1)[0]);
+        saveRecycle();
+        renderFolder(folder);
+        renderRecycleBin();
+        showToast(`"${item.name}" foi movido para a Lixeira.`);
+      }
+    }
+
+    function renderRecycleBin() {
+      const grid = document.getElementById('recycleGrid');
+      grid.innerHTML = '';
+      state.recycleBin.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'folder-card';
+        card.innerHTML = `<div style="font-size:32px;margin-bottom:8px;">${iconForType(item.type)}</div><div>${item.name}</div>`;
+        card.addEventListener('dblclick', () => {
+          folderData['Documentos'].push(state.recycleBin.splice(index, 1)[0]);
+          saveRecycle();
+          renderRecycleBin();
+          showToast('Item restaurado.');
+        });
+        grid.appendChild(card);
+      });
+      if (!state.recycleBin.length) grid.innerHTML = '<div>A Lixeira está vazia.</div>';
+    }
+
+    function renderMediaList() {
+      const list = document.getElementById('mediaList');
+      list.innerHTML = '';
+      mediaItems.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'media-item';
+        row.innerHTML = `<strong>${item.name}</strong><div style="font-size:12px;opacity:.7;">${item.type}</div>`;
+        row.addEventListener('click', () => {
+          document.querySelectorAll('.media-item').forEach(el => el.classList.remove('active'));
+          row.classList.add('active');
+          openMediaItem(item);
+        });
+        if (i === 0) row.classList.add('active');
+        list.appendChild(row);
+      });
+      if (mediaItems[0]) openMediaItem(mediaItems[0]);
+    }
+
+    function openMediaItem(item) {
+      const viewer = document.getElementById('mediaViewer');
+      if (item.type === 'image') viewer.innerHTML = `<img src="${item.src}" alt="${item.name}">`;
+      else if (item.type === 'audio') viewer.innerHTML = `<audio controls src="${item.src}"></audio>`;
+      else if (item.type === 'video') viewer.innerHTML = `<video controls src="${item.src}"></video>`;
+      else viewer.innerHTML = `<div>${item.name}</div>`;
+    }
+
+    function openFile(item) {
+      if (['image','audio','video'].includes(item.type)) {
+        openApp('media');
+        openMediaItem(item);
+        return;
+      }
+      openApp('notepad');
+      const area = document.getElementById('notepadArea');
+      area.value = `Arquivo aberto: ${item.name}\n\nConteúdo simulado.`;
+    }
+
+    function focusWindow(win) {
+      state.highestZ += 1;
+      win.style.zIndex = state.highestZ;
+      state.activeWindow = win;
+      updateTaskbarEntries();
+    }
+
+    function getWindow(app) {
+      return document.getElementById(`win-${app}`);
+    }
+
+    function openApp(app, extra) {
+      const win = getWindow(app);
+      if (!win) return;
+      win.classList.add('show');
+      win.dataset.minimized = 'false';
+      focusWindow(win);
+      if (app === 'explorer') renderFolder(extra || state.explorerFolder || 'Documentos');
+      if (app === 'paint') resizeCanvas();
+      if (app === 'recycle') renderRecycleBin();
+      if (app === 'media') renderMediaList();
+      updateTaskbarEntries();
+    }
+
+    function minimizeWindow(win) {
+      win.classList.remove('show');
+      win.dataset.minimized = 'true';
+      updateTaskbarEntries();
+    }
+
+    function closeWindow(win) {
+      win.classList.remove('show', 'maximized');
+      win.dataset.minimized = 'false';
+      updateTaskbarEntries();
+    }
+
+    function toggleMaximize(win) {
+      if (!win.classList.contains('maximized')) {
+        win.dataset.prevLeft = win.style.left;
+        win.dataset.prevTop = win.style.top;
+        win.dataset.prevWidth = win.style.width;
+        win.dataset.prevHeight = win.style.height;
+        win.classList.add('maximized');
+      } else {
+        win.classList.remove('maximized');
+        win.style.left = win.dataset.prevLeft || '100px';
+        win.style.top = win.dataset.prevTop || '80px';
+        win.style.width = win.dataset.prevWidth || '680px';
+        win.style.height = win.dataset.prevHeight || '460px';
+      }
+      if (win.id === 'win-paint') resizeCanvas();
+    }
+
+    function updateTaskbarEntries() {
+      document.querySelectorAll('.task-app').forEach(btn => {
+        const app = btn.dataset.open;
+        const win = getWindow(app);
+        if (win && win.classList.contains('show') && win.dataset.minimized !== 'true') btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      taskbarWindows.innerHTML = '';
+      document.querySelectorAll('.window').forEach(win => {
+        if (win.classList.contains('show') || win.dataset.minimized === 'true') {
+          const entry = document.createElement('button');
+          entry.className = 'task-window-entry';
+          if (win === state.activeWindow && win.classList.contains('show')) entry.classList.add('active');
+          if (win.dataset.minimized === 'true') entry.classList.add('minimized');
+          entry.textContent = win.dataset.title || 'Janela';
+          entry.addEventListener('click', () => {
+            if (win.dataset.minimized === 'true' || !win.classList.contains('show')) {
+              win.classList.add('show');
+              win.dataset.minimized = 'false';
+            }
+            focusWindow(win);
+            updateTaskbarEntries();
+          });
+          taskbarWindows.appendChild(entry);
+        }
+      });
+    }
+
+    function startDrag(e) {
+      const win = e.currentTarget.closest('.window');
+      if (win.classList.contains('maximized')) return;
+      focusWindow(win);
+      const rect = win.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      function move(ev) {
+        const maxX = window.innerWidth - win.offsetWidth;
+        const maxY = window.innerHeight - 48 - win.offsetHeight;
+        let left = ev.clientX - offsetX;
+        let top = ev.clientY - offsetY;
+        left = Math.max(0, Math.min(maxX, left));
+        top = Math.max(0, Math.min(maxY, top));
+        win.style.left = left + 'px';
+        win.style.top = top + 'px';
+      }
+      function up() {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+      }
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    }
+
+    function startResize(e) {
+      e.stopPropagation();
+      const handle = e.target;
+      const win = handle.closest('.window');
+      if (win.classList.contains('maximized')) return;
+      focusWindow(win);
+      const startRect = win.getBoundingClientRect();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      function move(ev) {
+        if (handle.classList.contains('e') || handle.classList.contains('se')) {
+          win.style.width = Math.max(260, startRect.width + (ev.clientX - startX)) + 'px';
+        }
+        if (handle.classList.contains('s') || handle.classList.contains('se')) {
+          win.style.height = Math.max(180, startRect.height + (ev.clientY - startY)) + 'px';
+        }
+        if (win.id === 'win-paint') resizeCanvas();
+      }
+      function up() {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+      }
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    }
+
+    function setupWindows() {
+      document.querySelectorAll('.window').forEach(win => {
+        win.addEventListener('mousedown', () => focusWindow(win));
+        win.querySelector('.titlebar').addEventListener('mousedown', startDrag);
+        win.querySelectorAll('.resize-handle').forEach(h => h.addEventListener('mousedown', startResize));
+        win.querySelectorAll('.win-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const action = btn.dataset.action;
+            if (action === 'minimize') minimizeWindow(win);
+            if (action === 'maximize') toggleMaximize(win);
+            if (action === 'close') closeWindow(win);
+          });
+        });
+      });
+    }
+
+    function bootToLogin() {
+      startBootSequence();
+    }
+
+    function login() {
+      showScreen('desktop');
+      openApp('edge');
+      startupAudio.play().catch(() => {});
+      addNotification('Sessão iniciada com sucesso.');
+    }
+
+    function powerAction(type) {
+      powerMenu.classList.remove('open');
+      if (type === 'sleep') {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:absolute;inset:0;background:#000;z-index:10000;display:grid;place-items:center;color:white;font-size:28px;';
+        overlay.textContent = 'Suspenso — clique para voltar';
+        overlay.addEventListener('click', () => overlay.remove());
+        document.body.appendChild(overlay);
+        showToast('Sistema suspenso.');
+        return;
+      }
+      if (type === 'restart') {
+        showToast('Reiniciando...');
+        setTimeout(() => {
+          document.querySelectorAll('.window').forEach(closeWindow);
+          showScreen('boot');
+          bootToLogin();
+        }, 800);
+        return;
+      }
+      if (type === 'shutdown') {
+        showToast('Desligando...');
+        setTimeout(() => {
+          document.querySelectorAll('.window').forEach(closeWindow);
+          loginPanel.classList.remove('visible');
+          lockInfo.style.opacity = '1';
+          showScreen('boot');
+          bootToLogin();
+        }, 800);
+      }
+    }
+
+    function setupDesktopSelection() {
+      let selecting = false, startX = 0, startY = 0;
+      desktopArea.addEventListener('mousedown', (e) => {
+        if (e.button !== 0 || e.target.closest('.window') || e.target.closest('.desktop-icon') || e.target.closest('.taskbar')) return;
+        selecting = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        selectionBox.style.display = 'block';
+        selectionBox.style.left = startX + 'px';
+        selectionBox.style.top = startY + 'px';
+        selectionBox.style.width = '0px';
+        selectionBox.style.height = '0px';
+        document.querySelectorAll('.desktop-icon').forEach(icon => icon.classList.remove('selected'));
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!selecting) return;
+        const left = Math.min(startX, e.clientX);
+        const top = Math.min(startY, e.clientY);
+        const width = Math.abs(e.clientX - startX);
+        const height = Math.abs(e.clientY - startY);
+        Object.assign(selectionBox.style, { left: left + 'px', top: top + 'px', width: width + 'px', height: height + 'px' });
+        const boxRect = selectionBox.getBoundingClientRect();
+        document.querySelectorAll('.desktop-icon').forEach(icon => {
+          const rect = icon.getBoundingClientRect();
+          const hit = !(rect.right < boxRect.left || rect.left > boxRect.right || rect.bottom < boxRect.top || rect.top > boxRect.bottom);
+          icon.classList.toggle('selected', hit);
+        });
+      });
+      document.addEventListener('mouseup', () => {
+        if (!selecting) return;
+        selecting = false;
+        selectionBox.style.display = 'none';
+      });
+    }
+
+    function setupContextMenu() {
+      desktopArea.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('.window')) return;
+        e.preventDefault();
+        contextMenu.style.left = e.clientX + 'px';
+        contextMenu.style.top = e.clientY + 'px';
+        contextMenu.style.display = 'block';
+      });
+      contextMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = e.target.dataset.action;
+        if (!action) return;
+        if (action === 'refresh') showToast('Área de trabalho atualizada.');
+        if (action === 'new') showToast('Novo item criado (simulado).');
+        if (action === 'personalize') openApp('settings');
+        contextMenu.style.display = 'none';
+      });
+    }
+
+    function setupStart() {
+      startButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startMenu.classList.toggle('open');
+        powerMenu.classList.remove('open');
+      });
+      document.addEventListener('click', () => {
+        startMenu.classList.remove('open');
+        contextMenu.style.display = 'none';
+        powerMenu.classList.remove('open');
+      });
+      startMenu.addEventListener('click', e => e.stopPropagation());
+      powerMenu.addEventListener('click', e => e.stopPropagation());
+      document.querySelectorAll('[data-open]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          const app = e.currentTarget.dataset.open;
+          openApp(app);
+          startMenu.classList.remove('open');
+        });
+      });
+      document.getElementById('startPower').addEventListener('click', () => {
+        powerMenu.classList.toggle('open');
+      });
+      document.querySelectorAll('.power-item').forEach(item => item.addEventListener('click', () => powerAction(item.dataset.power)));
+    }
+
+    function setupDesktopIcons() {
+      document.querySelectorAll('.desktop-icon').forEach(icon => {
+        icon.addEventListener('click', () => {
+          document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+          icon.classList.add('selected');
+        });
+        icon.addEventListener('dblclick', () => {
+          const app = icon.dataset.app;
+          if (app === 'documents') openApp('explorer', 'Documentos');
+          else openApp(app);
+        });
+      });
+    }
+
+    function setupExplorer() {
+      renderFolder('Documentos');
+      document.getElementById('explorerSidebar').addEventListener('click', (e) => {
+        const item = e.target.closest('.side-item');
+        if (!item) return;
+        if (item.dataset.folder === 'Lixeira') openApp('recycle');
+        else renderFolder(item.dataset.folder);
+      });
+    }
+
+    function setupNotepad() {
+      const area = document.getElementById('notepadArea');
+      area.value = localStorage.getItem('win10_notepad') || '';
+      document.getElementById('saveNoteBtn').addEventListener('click', () => {
+        localStorage.setItem('win10_notepad', area.value);
+        showToast('Arquivo salvo com sucesso.');
+      });
+      document.getElementById('clearNoteBtn').addEventListener('click', () => { area.value = ''; });
+    }
+
+    function setupCalculator() {
+      const calcDisplay = document.getElementById('calcDisplay');
+      const calcGrid = document.getElementById('calcGrid');
+      const layout = ['C','±','%','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','0','.','='];
+      let expr = '0';
+      function render() { calcDisplay.textContent = expr; }
+      function handle(v) {
+        if (v === 'C') expr = '0';
+        else if (v === '±') expr = String(Number(expr || 0) * -1);
+        else if (v === '%') expr = String(Number(expr || 0) / 100);
+        else if (v === '=') {
+          try { expr = String(Function('return ' + expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-'))()); }
+          catch { expr = 'Erro'; }
+        } else if (expr === '0' && !['+','−','×','÷','.'].includes(v)) expr = v;
+        else expr += v;
+        render();
+      }
+      layout.forEach((txt, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = txt;
+        if ('C±%÷×−+=' .includes(txt)) btn.classList.add('op');
+        if (idx === 16) btn.style.gridColumn = 'span 2';
+        btn.addEventListener('click', () => handle(txt));
+        calcGrid.appendChild(btn);
+      });
+      render();
+    }
+
+    /* Paint */
+    const canvas = document.getElementById('paintCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, lastX = 0, lastY = 0;
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      let snapshot = null;
+      try { if (canvas.width && canvas.height) snapshot = ctx.getImageData(0,0,canvas.width,canvas.height); } catch {}
+      canvas.width = Math.max(300, Math.floor(rect.width));
+      canvas.height = Math.max(220, Math.floor(rect.height));
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      if (snapshot) { try { ctx.putImageData(snapshot,0,0); } catch {} }
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    }
+    function startDraw(e) { drawing = true; const r = canvas.getBoundingClientRect(); lastX = e.clientX - r.left; lastY = e.clientY - r.top; }
+    function draw(e) {
+      if (!drawing) return;
+      const r = canvas.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      ctx.strokeStyle = state.paintMode === 'eraser' ? '#ffffff' : state.paintColor;
+      ctx.lineWidth = state.paintSize;
+      ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke();
+      lastX = x; lastY = y;
+    }
+    function stopDraw() { drawing = false; }
+    function setupPaint() {
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', draw);
+      document.addEventListener('mouseup', stopDraw);
+      document.getElementById('brushTool').addEventListener('click', () => state.paintMode = 'brush');
+      document.getElementById('eraserTool').addEventListener('click', () => state.paintMode = 'eraser');
+      document.getElementById('clearCanvasBtn').addEventListener('click', () => { ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); });
+      document.getElementById('brushSize').addEventListener('input', e => state.paintSize = Number(e.target.value));
+      document.querySelectorAll('.color-swatch').forEach(s => s.addEventListener('click', () => { state.paintColor = s.dataset.color; state.paintMode = 'brush'; }));
+    }
+
+    function setupEdge() {
+      const address = document.getElementById('edgeAddress');
+      const frame = document.getElementById('edgeFrame');
+      const fallback = document.getElementById('edgeFallback');
+      function normalizeUrl(value) {
+        const raw = value.trim();
+        if (!raw) return 'https://example.com';
+        if (/^https?:\/\//i.test(raw)) return raw;
+        if (raw.includes('.')) return 'https://' + raw;
+        return 'https://www.google.com/search?q=' + encodeURIComponent(raw);
+      }
+      function go() {
+        const url = normalizeUrl(address.value);
+        frame.src = url;
+        fallback.classList.add('hidden');
+        addNotification('Tentando abrir ' + url);
+      }
+      document.getElementById('edgeGoBtn').addEventListener('click', go);
+      document.getElementById('edgeExternalBtn').addEventListener('click', () => {
+        const url = normalizeUrl(address.value || 'https://www.youtube.com');
+        window.open(url, '_blank');
+      });
+      frame.addEventListener('load', () => {});
+      address.value = 'https://www.youtube.com';
+    }
+
+    function setupSettings() {
+      document.getElementById('settingsNav').addEventListener('click', (e) => {
+        const tab = e.target.closest('.settings-tab');
+        if (!tab) return;
+        document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`[data-section="${tab.dataset.tab}"]`).classList.add('active');
+      });
+      document.getElementById('playStartupBtn').addEventListener('click', () => startupAudio.play().catch(()=>{}));
+      document.getElementById('openActionCenterBtn').addEventListener('click', () => actionCenter.classList.add('open'));
+    }
+
+    function setupRecycle() {
+      renderRecycleBin();
+      document.getElementById('emptyRecycleBtn').addEventListener('click', () => {
+        state.recycleBin = [];
+        saveRecycle();
+        renderRecycleBin();
+        showToast('Lixeira esvaziada.');
+      });
+      document.getElementById('restoreRecycleBtn').addEventListener('click', () => {
+        folderData['Documentos'].push(...state.recycleBin);
+        state.recycleBin = [];
+        saveRecycle();
+        renderRecycleBin();
+        showToast('Itens restaurados para Documentos.');
+      });
+    }
+
+    function setupOffice() {
+      document.querySelectorAll('[data-format]').forEach(btn => btn.addEventListener('click', () => document.execCommand(btn.dataset.format)));
+      const wordEditor = document.getElementById('wordEditor');
+      wordEditor.innerHTML = localStorage.getItem('win10_word') || '<h2>Documento sem título</h2><p>Escreva aqui...</p>';
+      document.getElementById('saveWordBtn').addEventListener('click', () => {
+        localStorage.setItem('win10_word', wordEditor.innerHTML);
+        showToast('Documento do Word salvo.');
+      });
+
+      const excelGrid = document.getElementById('excelGrid');
+      const headers = ['', 'A','B','C','D','E','F','G','H'];
+      for (let r=0; r<10; r++) {
+        for (let c=0; c<9; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'sheet-cell';
+          cell.contentEditable = c > 0 && r > 0;
+          cell.textContent = r === 0 ? headers[c] : c === 0 ? r : '';
+          if (r === 0 || c === 0) cell.style.background = '#f3f3f3';
+          excelGrid.appendChild(cell);
+        }
+      }
+      document.getElementById('fillSheetBtn').addEventListener('click', () => {
+        const cells = [...excelGrid.querySelectorAll('.sheet-cell')];
+        const values = ['Vendas','1200','980','1430','Lucro','320','150','470'];
+        values.forEach((v,i) => { if (cells[10+i]) cells[10+i].textContent = v; });
+      });
+
+      let slideCount = 1;
+      document.getElementById('addSlideBtn').addEventListener('click', () => {
+        slideCount++;
+        const slide = document.createElement('div');
+        slide.className = 'slide-thumb';
+        slide.textContent = 'Slide ' + slideCount;
+        document.getElementById('slidesList').appendChild(slide);
+      });
+    }
+
+    function setupPowerButtons() {
+      document.getElementById('powerBtn').addEventListener('click', () => powerAction('shutdown'));
+    }
+
+    function setupLogin() {
+      document.getElementById('loginScreen').addEventListener('click', (e) => {
+        if (!loginPanel.classList.contains('visible') && e.target.id !== 'powerBtn') {
+          lockInfo.style.opacity = '0';
+          setTimeout(() => loginPanel.classList.add('visible'), 120);
+        }
+      });
+      document.getElementById('loginBtn').addEventListener('click', login);
+      document.getElementById('passwordInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+    }
+
+    function setupTaskbar() {
+      document.querySelectorAll('.task-app').forEach(btn => btn.addEventListener('click', () => openApp(btn.dataset.open)));
+      document.getElementById('actionCenterToggle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        actionCenter.classList.toggle('open');
+      });
+      actionCenter.addEventListener('click', e => e.stopPropagation());
+    }
+
+    updateClocks();
+    setInterval(updateClocks, 1000);
+    bootToLogin();
+    initWallpaper();
+    setupWindows();
+    setupStart();
+    setupDesktopIcons();
+    setupDesktopSelection();
+    setupContextMenu();
+    setupExplorer();
+    setupNotepad();
+    setupCalculator();
+    setupPaint();
+    setupEdge();
+    setupSettings();
+    setupRecycle();
+    setupOffice();
+    setupPowerButtons();
+    setupLogin();
+    setupTaskbar();
+    renderMediaList();
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 120);
+  </script>
+</body>
+</html>
