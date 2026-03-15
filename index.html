@@ -91,11 +91,22 @@
 
     /* Desktop */
     #desktopScreen {
-      background-image: linear-gradient(var(--desktop-filter), var(--desktop-filter)), var(--wallpaper);
+      background-color:#0f2137; background-image: linear-gradient(var(--desktop-filter), var(--desktop-filter)), var(--wallpaper, url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80'));
       background-size: cover; background-position: center; overflow: hidden; transition: background-image .4s ease;
     }
     #desktopArea { position: absolute; inset: 0 0 var(--taskbar-h) 0; overflow: hidden; }
-    .desktop-icons { display: flex; flex-direction: column; gap: 14px; padding: 16px 10px; width: 104px; position: relative; z-index: 2; }
+    .desktop-icons {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 14px;
+      padding: 16px 10px;
+      width: max-content;
+      height: 100%;
+      position: relative;
+      z-index: 2;
+    }
     .desktop-icon {
       width: 92px; padding: 6px 4px; border: 1px solid transparent; border-radius: 4px; text-align: center; color: white; text-shadow: 0 2px 8px rgba(0,0,0,.85); cursor: default;
     }
@@ -229,6 +240,13 @@
     .wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin-top: 16px; }
     .wallpaper-thumb { height: 88px; border-radius: 10px; background-size: cover; background-position: center; border: 2px solid transparent; cursor: pointer; box-shadow: var(--shadow-soft); }
     .wallpaper-thumb:hover { transform: translateY(-1px); }
+    .wallpaper-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .upload-note { font-size:12px; color:#555; margin-top:10px; }
+    .media-toolbar { padding: 10px; border-bottom: 1px solid #ddd; background: #fbfbfb; display:flex; gap:10px; flex-wrap:wrap; }
+    .media-list-inner { padding: 10px; overflow: auto; }
+    .media-empty { color:#666; font-size:13px; }
+    .media-actions { margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .media-meta { margin-top: 10px; font-size: 13px; color:#444; text-align:center; }
 
     .media-wrap { display: grid; grid-template-columns: 230px 1fr; height: 100%; }
     .media-list { background: #f6f6f6; border-right: 1px solid #ddd; padding: 10px; overflow: auto; }
@@ -272,6 +290,58 @@
       .settings-layout, .media-wrap, .explorer { grid-template-columns: 1fr; }
       .settings-nav, .media-list, .sidebar { border-right: none; border-bottom: 1px solid #ddd; }
     }
+  
+    .search-box { width: 280px; height: 34px; background: rgba(255,255,255,.92); color: #333; border-radius: 3px; display: flex; align-items: center; gap: 8px; padding: 0 10px; margin-left: 4px; font-size: 13px; border: 1px solid rgba(0,0,0,.08); }
+    .search-box input { flex: 1; border: none; outline: none; background: transparent; color: #222; }
+    .search-box button { border:none; background:transparent; cursor:pointer; font-size:15px; }
+    .search-panel {
+      position:absolute; left:56px; bottom: calc(var(--taskbar-h) + 8px); width: 360px; max-height: 380px;
+      background: rgba(28,28,28,.96); color:white; backdrop-filter: blur(18px); border:1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow); z-index: 6800; display:none; overflow:auto; border-radius:12px;
+    }
+    .search-panel.open { display:block; }
+    .search-header { padding:14px 16px 8px; color:#bbb; font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+    .search-result { padding:12px 16px; cursor:pointer; border-top:1px solid rgba(255,255,255,.05); }
+    .search-result:hover { background: rgba(255,255,255,.08); }
+    .search-result small { display:block; color:#b9d8ff; margin-top:4px; }
+    .search-empty { padding:18px 16px; color:#bbb; }
+    .photos-layout { display:grid; grid-template-columns: 220px 1fr; height:100%; }
+    .photos-sidebar { background:#f6f6f6; border-right:1px solid #ddd; display:flex; flex-direction:column; }
+    .photos-toolbar { padding:10px; border-bottom:1px solid #ddd; display:flex; gap:8px; flex-wrap:wrap; background:#fbfbfb; }
+    .photos-list { padding:10px; overflow:auto; }
+    .photo-item { padding:10px; border:1px solid #e2e2e2; border-radius:10px; background:white; margin-bottom:8px; cursor:pointer; }
+    .photo-item:hover, .photo-item.active { background:#eaf4ff; }
+    .photos-view { display:flex; flex-direction:column; height:100%; }
+    .photos-stage { flex:1; display:flex; align-items:center; justify-content:center; background:#fff; padding:18px; overflow:auto; }
+    .photos-stage img { max-width:100%; max-height:100%; border-radius:14px; box-shadow: var(--shadow-soft); }
+    .photos-actions { padding:12px; border-top:1px solid #ddd; background:#fbfbfb; display:flex; gap:10px; flex-wrap:wrap; }
+    .skype-layout { display:grid; grid-template-columns: 240px 1fr; height:100%; }
+    .skype-sidebar { background:#0f4f9c; color:white; padding:12px; }
+    .skype-contact { padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.1); margin-bottom:8px; cursor:pointer; }
+    .skype-contact:hover, .skype-contact.active { background:rgba(255,255,255,.22); }
+    .skype-chat { display:flex; flex-direction:column; height:100%; background:#f7fbff; }
+    .skype-chat-header { padding:14px 16px; background:white; border-bottom:1px solid #dbe6f3; font-weight:600; }
+    .skype-messages { flex:1; padding:14px; overflow:auto; display:flex; flex-direction:column; gap:10px; }
+    .skype-bubble { max-width:70%; padding:10px 12px; border-radius:16px; background:white; box-shadow:0 4px 12px rgba(0,0,0,.06); }
+    .skype-bubble.me { align-self:flex-end; background:#d9ecff; }
+    .skype-compose { padding:12px; border-top:1px solid #dbe6f3; display:flex; gap:10px; background:white; }
+    .skype-compose input { flex:1; padding:10px 12px; border:1px solid #cfdceb; border-radius:999px; }
+    .video-editor-wrap { display:flex; flex-direction:column; height:100%; background:#f5f7fb; }
+    .video-editor-toolbar { padding:10px; border-bottom:1px solid #d8e1ef; display:flex; gap:8px; flex-wrap:wrap; background:white; }
+    .video-editor-main { flex:1; display:grid; grid-template-columns: 1.25fr .75fr; min-height:0; }
+    .video-preview { background:#111; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .video-preview canvas { max-width:100%; max-height:100%; background:black; }
+    .video-editor-side { background:#fff; border-left:1px solid #d8e1ef; padding:14px; overflow:auto; }
+    .video-editor-side label { display:block; margin-bottom:12px; font-size:13px; }
+    .video-editor-side input[type="range"], .video-editor-side input[type="text"], .video-editor-side select { width:100%; margin-top:6px; }
+    .editor-status { font-size:12px; color:#555; margin-top:8px; }
+    @media (max-width: 980px) {
+      .photos-layout, .skype-layout, .video-editor-main { grid-template-columns:1fr; }
+      .photos-sidebar, .skype-sidebar, .video-editor-side { border-right:none; border-left:none; border-bottom:1px solid #ddd; }
+      .search-box { width: 190px; }
+      .search-panel { width: calc(100% - 16px); left:8px; }
+    }
+
   </style>
 </head>
 <body>
@@ -316,6 +386,9 @@
         <div class="desktop-icon" data-app="word" data-label="Word"><div class="icon">🟦</div><div class="label">Word</div></div>
         <div class="desktop-icon" data-app="excel" data-label="Excel"><div class="icon">🟩</div><div class="label">Excel</div></div>
         <div class="desktop-icon" data-app="powerpoint" data-label="PowerPoint"><div class="icon">🟧</div><div class="label">PowerPoint</div></div>
+        <div class="desktop-icon" data-app="fotos" data-label="Fotos"><div class="icon">🖼️</div><div class="label">Fotos</div></div>
+        <div class="desktop-icon" data-app="videoeditor" data-label="Editor de Vídeo"><div class="icon">🎬</div><div class="label">Editor de Vídeo</div></div>
+        <div class="desktop-icon" data-app="skype" data-label="Skype"><div class="icon">💬</div><div class="label">Skype</div></div>
       </div>
 
       <div id="selectionBox" class="selection-box"></div>
@@ -346,6 +419,9 @@
         <div class="start-item" data-open="word">🟦 Word</div>
         <div class="start-item" data-open="excel">🟩 Excel</div>
         <div class="start-item" data-open="powerpoint">🟧 PowerPoint</div>
+        <div class="start-item" data-open="fotos">🖼️ Fotos</div>
+        <div class="start-item" data-open="videoeditor">🎬 Editor de Vídeo</div>
+        <div class="start-item" data-open="skype">💬 Skype</div>
       </div>
       <div class="start-tiles">
         <h3>Fixado</h3>
@@ -355,6 +431,9 @@
           <div class="tile dark" data-open="explorer">Arquivos</div>
           <div class="tile" data-open="calculator">Calculadora</div>
           <div class="tile" data-open="paint">Paint</div>
+          <div class="tile dark" data-open="fotos">Fotos</div>
+          <div class="tile" data-open="videoeditor">Editor Vídeo</div>
+          <div class="tile dark" data-open="skype">Skype</div>
           <div class="tile dark" data-open="settings">Configurações</div>
         </div>
       </div>
@@ -460,6 +539,11 @@
           <div class="settings-section active" data-section="personalization">
             <h2>Plano de fundo</h2>
             <p>Escolha um wallpaper.</p>
+            <div class="wallpaper-actions">
+              <button id="uploadWallpaperBtn">Adicionar wallpaper JPG/PNG</button>
+              <button id="resetWallpaperBtn">Restaurar padrão</button>
+            </div>
+            <div class="upload-note">Você também pode importar uma imagem na janela Fotos &amp; Mídia e clicar em <strong>Usar como wallpaper</strong>.</div>
             <div class="wallpaper-grid" id="wallpaperGrid"></div>
           </div>
           <div class="settings-section" data-section="system">
@@ -483,7 +567,13 @@
     <div class="window" id="win-media" data-app="media" data-title="Fotos & Mídia" style="left:240px; top:90px; width:900px; height:560px;">
       <div class="titlebar"><div class="title">Fotos & Mídia</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
       <div class="window-body media-wrap">
-        <div class="media-list" id="mediaList"></div>
+        <div class="media-list">
+          <div class="media-toolbar">
+            <button id="importMediaBtn">Importar JPG, PNG, MP3, MP4</button>
+            <button id="clearImportedMediaBtn">Remover importados</button>
+          </div>
+          <div class="media-list-inner" id="mediaList"></div>
+        </div>
         <div class="media-viewer" id="mediaViewer"><div>Escolha um item à esquerda.</div></div>
       </div>
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
@@ -531,6 +621,97 @@
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
     </div>
 
+    
+    <!-- Fotos -->
+    <div class="window" id="win-fotos" data-app="fotos" data-title="Fotos" style="left:210px; top:90px; width:920px; height:560px;">
+      <div class="titlebar"><div class="title">Fotos</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body photos-layout">
+        <div class="photos-sidebar">
+          <div class="photos-toolbar">
+            <button id="photosImportBtn">Importar foto</button>
+            <button id="photosRefreshBtn">Atualizar</button>
+          </div>
+          <div class="photos-list" id="photosList"></div>
+        </div>
+        <div class="photos-view">
+          <div class="photos-stage" id="photosStage"><div>Escolha uma imagem à esquerda.</div></div>
+          <div class="photos-actions">
+            <button id="photoSetWallpaperBtn">Usar como wallpaper</button>
+            <button id="photoOpenMediaBtn">Abrir em Fotos &amp; Mídia</button>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Video Editor -->
+    <div class="window" id="win-videoeditor" data-app="videoeditor" data-title="Editor de Vídeo" style="left:190px; top:75px; width:980px; height:620px;">
+      <div class="titlebar"><div class="title">Editor de Vídeo</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body video-editor-wrap">
+        <div class="video-editor-toolbar">
+          <button id="videoImportBtn">Importar vídeo</button>
+          <button id="videoPlayBtn">▶ Reproduzir</button>
+          <button id="videoPauseBtn">⏸ Pausar</button>
+          <button id="videoExportBtn">Exportar vídeo</button>
+          <span class="editor-status" id="videoEditorTopStatus">Importe um MP4 para começar. A exportação sai em WebM dentro do navegador.</span>
+        </div>
+        <div class="video-editor-main">
+          <div class="video-preview">
+            <video id="videoEditorSource" class="hidden" playsinline crossorigin="anonymous"></video>
+            <canvas id="videoEditorCanvas" width="960" height="540"></canvas>
+          </div>
+          <div class="video-editor-side">
+            <label>Texto sobre o vídeo
+              <input id="videoOverlayText" type="text" placeholder="Ex.: Meu clipe" />
+            </label>
+            <label>Filtro
+              <select id="videoFilterSelect">
+                <option value="none">Nenhum</option>
+                <option value="grayscale(1)">Preto e branco</option>
+                <option value="sepia(1)">Sépia</option>
+                <option value="invert(1)">Inverter</option>
+                <option value="brightness(1.2)">Mais brilho</option>
+                <option value="contrast(1.3)">Mais contraste</option>
+              </select>
+            </label>
+            <label>Início do corte: <span id="videoStartLabel">0.0s</span>
+              <input id="videoTrimStart" type="range" min="0" max="0" step="0.1" value="0" />
+            </label>
+            <label>Fim do corte: <span id="videoEndLabel">0.0s</span>
+              <input id="videoTrimEnd" type="range" min="0" max="0" step="0.1" value="0" />
+            </label>
+            <label>Volume da prévia
+              <input id="videoPreviewVolume" type="range" min="0" max="1" step="0.05" value="1" />
+            </label>
+            <div class="editor-status" id="videoEditorStatus">Você pode cortar o vídeo, aplicar filtro, escrever um texto e exportar.</div>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Skype -->
+    <div class="window" id="win-skype" data-app="skype" data-title="Skype" style="left:250px; top:110px; width:860px; height:540px;">
+      <div class="titlebar"><div class="title">Skype</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body skype-layout">
+        <div class="skype-sidebar" id="skypeContacts"></div>
+        <div class="skype-chat">
+          <div class="skype-chat-header" id="skypeChatHeader">Selecione um contato</div>
+          <div class="skype-messages" id="skypeMessages"></div>
+          <div class="skype-compose">
+            <input id="skypeInput" placeholder="Digite uma mensagem..." />
+            <button id="skypeSendBtn">Enviar</button>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <div id="searchPanel" class="search-panel">
+      <div class="search-header">Pesquisar no Windows</div>
+      <div id="searchResults"></div>
+    </div>
+
     <div id="actionCenter" class="action-center">
       <div class="ac-header">Centro de Ações</div>
       <div class="ac-body" id="actionCenterBody">
@@ -544,7 +725,7 @@
     <div class="taskbar">
       <div class="tb-left">
         <button class="tb-btn" id="startButton" title="Iniciar"><div class="start-logo"><span></span></div></button>
-        <div class="search-box">🔎 Digite aqui para pesquisar</div>
+        <div class="search-box"><span>🔎</span><input id="taskSearchInput" type="text" placeholder="Digite aqui para pesquisar"><button id="taskSearchBtn" title="Pesquisar">↵</button></div>
         <button class="task-app" data-open="edge" id="task-edge" title="Edge">🌐</button>
         <button class="task-app" data-open="explorer" id="task-explorer" title="Explorador">📁</button>
         <button class="task-app" data-open="store" id="task-store" title="Store">🛍️</button>
@@ -556,6 +737,10 @@
       </div>
     </div>
   </div>
+
+  <input id="mediaFileInput" type="file" accept=".jpg,.jpeg,.png,.mp3,.mp4,image/png,image/jpeg,audio/mpeg,video/mp4" multiple class="hidden">
+  <input id="wallpaperFileInput" type="file" accept=".jpg,.jpeg,.png,image/png,image/jpeg" class="hidden">
+  <input id="videoEditorFileInput" type="file" accept=".mp4,video/mp4" class="hidden">
 
   <script>
     const screens = {
@@ -575,9 +760,20 @@
       selectedDesktopIcons: new Set(),
       sleepOverlay: null,
       powerMenuOpen: false,
+      currentMediaItem: null,
+      objectUrls: [],
+      customWallpapers: [],
+      importedMedia: [],
+      currentPhotoItem: null,
+      currentSkypeContact: null,
+      videoEditorFileName: 'video-editado.webm',
     };
 
     const bootMessages = ['Preparando o Windows', 'Configurando dispositivos', 'Instalando recursos', 'Quase pronto'];
+    const DB_NAME = 'windows10DeluxeDB';
+    const DB_VERSION = 1;
+    const STORE_MEDIA = 'mediaFiles';
+    const STORE_WALLPAPERS = 'wallpapers';
     const wallpapers = [
       'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
@@ -609,6 +805,106 @@
     };
 
     const mediaItems = [...folderData['Imagens'], ...folderData['Músicas'], ...folderData['Vídeos']];
+    const skypeData = {
+      'Ana': ['Oi! Testando o Skype dentro do Windows HTML 😄', 'Ficou muito bonito esse sistema.'],
+      'Carlos': ['Quando terminar, me manda print do desktop novo.', 'A busca agora pode abrir apps e arquivos.'],
+      'Equipe': ['Lembrete: dá para importar JPG, PNG, MP3 e MP4.', 'O editor de vídeo exporta em WebM pelo navegador.']
+    };
+
+    const builtinWallpaperCount = wallpapers.length;
+
+
+    function isImageFile(file) { return ['image/jpeg', 'image/png'].includes(file.type) || /\.(jpe?g|png)$/i.test(file.name); }
+    function isAudioFile(file) { return file.type === 'audio/mpeg' || /\.mp3$/i.test(file.name); }
+    function isVideoFile(file) { return file.type === 'video/mp4' || /\.mp4$/i.test(file.name); }
+    function formatBytes(bytes = 0) {
+      if (!bytes) return '0 B';
+      const units = ['B','KB','MB','GB'];
+      let i = 0;
+      let value = bytes;
+      while (value >= 1024 && i < units.length - 1) { value /= 1024; i++; }
+      return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+    }
+
+    function createObjectURL(blob) {
+      const url = URL.createObjectURL(blob);
+      state.objectUrls.push(url);
+      return url;
+    }
+
+    function inferMediaType(file) {
+      if (isImageFile(file)) return 'image';
+      if (isAudioFile(file)) return 'audio';
+      if (isVideoFile(file)) return 'video';
+      return null;
+    }
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(STORE_MEDIA)) db.createObjectStore(STORE_MEDIA, { keyPath: 'id' });
+          if (!db.objectStoreNames.contains(STORE_WALLPAPERS)) db.createObjectStore(STORE_WALLPAPERS, { keyPath: 'id' });
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function getAllFromStore(storeName) {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readonly');
+        const req = tx.objectStore(storeName).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function putInStore(storeName, value) {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).put(value);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function clearStore(storeName) {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function loadPersistedAssets() {
+      try {
+        const [savedMedia, savedWalls] = await Promise.all([
+          getAllFromStore(STORE_MEDIA),
+          getAllFromStore(STORE_WALLPAPERS)
+        ]);
+        savedMedia.forEach(item => {
+          const src = createObjectURL(item.blob);
+          const entry = { name: item.name, type: item.type, src, imported: true, size: item.blob?.size || item.size || 0 };
+          state.importedMedia.push(entry);
+          mediaItems.push(entry);
+          if (item.type === 'image') folderData['Imagens'].push(entry);
+          if (item.type === 'audio') folderData['Músicas'].push(entry);
+          if (item.type === 'video') folderData['Vídeos'].push(entry);
+        });
+        savedWalls.forEach(item => {
+          const src = createObjectURL(item.blob);
+          state.customWallpapers.push({ id: item.id, url: src, name: item.name || 'Wallpaper personalizado', imported: true });
+        });
+      } catch (err) {
+        console.error('Erro ao carregar arquivos salvos', err);
+      }
+    }
 
     const loginPanel = document.getElementById('loginPanel');
     const lockInfo = document.getElementById('lockInfo');
@@ -673,24 +969,38 @@
       showToast._t = setTimeout(() => toast.style.display = 'none', 2000);
     }
 
-    function applyWallpaper(url) {
-      document.documentElement.style.setProperty('--wallpaper', `url('${url}')`);
-      localStorage.setItem('win10_wallpaper', url);
-      showToast('Plano de fundo alterado.');
-      addNotification('O wallpaper foi alterado com sucesso.');
+    function safeWallpaperUrl(url) {
+      if (!url || typeof url !== 'string') return wallpapers[0];
+      return url;
+    }
+
+    function applyWallpaper(url, silent = false) {
+      const finalUrl = safeWallpaperUrl(url);
+      document.documentElement.style.setProperty('--wallpaper', `url('${finalUrl}')`);
+      localStorage.setItem('win10_wallpaper', finalUrl);
+      if (!silent) {
+        showToast('Plano de fundo alterado.');
+        addNotification('O wallpaper foi alterado com sucesso.');
+      }
+    }
+
+    function renderWallpaperGrid() {
+      const grid = document.getElementById('wallpaperGrid');
+      grid.innerHTML = '';
+      [...wallpapers, ...state.customWallpapers.map(item => item.url)].forEach((url, index) => {
+        const item = document.createElement('div');
+        item.className = 'wallpaper-thumb';
+        item.style.backgroundImage = `url('${url}')`;
+        item.title = index < builtinWallpaperCount ? `Wallpaper ${index + 1}` : (state.customWallpapers[index - builtinWallpaperCount]?.name || 'Wallpaper personalizado');
+        item.addEventListener('click', () => applyWallpaper(url));
+        grid.appendChild(item);
+      });
     }
 
     function initWallpaper() {
       const saved = localStorage.getItem('win10_wallpaper') || wallpapers[0];
+      renderWallpaperGrid();
       applyWallpaper(saved);
-      const grid = document.getElementById('wallpaperGrid');
-      wallpapers.forEach(url => {
-        const item = document.createElement('div');
-        item.className = 'wallpaper-thumb';
-        item.style.backgroundImage = `url('${url}')`;
-        item.addEventListener('click', () => applyWallpaper(url));
-        grid.appendChild(item);
-      });
     }
 
     function saveRecycle() {
@@ -762,31 +1072,443 @@
       if (!state.recycleBin.length) grid.innerHTML = '<div>A Lixeira está vazia.</div>';
     }
 
-    function renderMediaList() {
+    function renderMediaList(selectName = null) {
       const list = document.getElementById('mediaList');
       list.innerHTML = '';
+      if (!mediaItems.length) {
+        list.innerHTML = '<div class="media-empty">Nenhum arquivo carregado.</div>';
+        document.getElementById('mediaViewer').innerHTML = '<div>Importe JPG, PNG, MP3 ou MP4 para visualizar aqui.</div>';
+        return;
+      }
+      let selectedItem = null;
       mediaItems.forEach((item, i) => {
         const row = document.createElement('div');
         row.className = 'media-item';
-        row.innerHTML = `<strong>${item.name}</strong><div style="font-size:12px;opacity:.7;">${item.type}</div>`;
+        row.innerHTML = `<strong>${item.name}</strong><div style="font-size:12px;opacity:.7;">${item.type}${item.imported ? ' • importado' : ''}</div>`;
         row.addEventListener('click', () => {
-          document.querySelectorAll('.media-item').forEach(el => el.classList.remove('active'));
+          document.querySelectorAll('#mediaList .media-item').forEach(el => el.classList.remove('active'));
           row.classList.add('active');
           openMediaItem(item);
         });
-        if (i === 0) row.classList.add('active');
+        const shouldSelect = (selectName && item.name === selectName) || (!selectName && i === 0);
+        if (shouldSelect) {
+          row.classList.add('active');
+          selectedItem = item;
+        }
         list.appendChild(row);
       });
-      if (mediaItems[0]) openMediaItem(mediaItems[0]);
+      openMediaItem(selectedItem || mediaItems[0]);
     }
 
     function openMediaItem(item) {
+      state.currentMediaItem = item;
       const viewer = document.getElementById('mediaViewer');
-      if (item.type === 'image') viewer.innerHTML = `<img src="${item.src}" alt="${item.name}">`;
-      else if (item.type === 'audio') viewer.innerHTML = `<audio controls src="${item.src}"></audio>`;
-      else if (item.type === 'video') viewer.innerHTML = `<video controls src="${item.src}"></video>`;
+      const meta = `<div class="media-meta">${item.name}${item.size ? ` • ${formatBytes(item.size)}` : ''}</div>`;
+      if (item.type === 'image') viewer.innerHTML = `<div><img src="${item.src}" alt="${item.name}"><div class="media-actions"><button id="setViewerWallpaperBtn">Usar como wallpaper</button></div>${meta}</div>`;
+      else if (item.type === 'audio') viewer.innerHTML = `<div><audio controls src="${item.src}"></audio>${meta}</div>`;
+      else if (item.type === 'video') viewer.innerHTML = `<div><video controls src="${item.src}"></video>${meta}</div>`;
       else viewer.innerHTML = `<div>${item.name}</div>`;
+      const setBtn = document.getElementById('setViewerWallpaperBtn');
+      if (setBtn) setBtn.addEventListener('click', () => applyWallpaper(item.src));
     }
+
+
+    async function addImportedMediaFiles(fileList) {
+      const files = [...fileList || []];
+      const valid = files.filter(file => inferMediaType(file));
+      if (!valid.length) {
+        showToast('Selecione arquivos JPG, PNG, MP3 ou MP4.');
+        return;
+      }
+      for (const file of valid) {
+        const type = inferMediaType(file);
+        const entry = { id: `media_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`, name: file.name, type, blob: file, size: file.size };
+        await putInStore(STORE_MEDIA, entry);
+        const appEntry = { name: file.name, type, src: createObjectURL(file), imported: true, size: file.size };
+        state.importedMedia.push(appEntry);
+        mediaItems.push(appEntry);
+        if (type === 'image') folderData['Imagens'].push(appEntry);
+        if (type === 'audio') folderData['Músicas'].push(appEntry);
+        if (type === 'video') folderData['Vídeos'].push(appEntry);
+      }
+      renderMediaList(valid[0]?.name || null);
+      if (getWindow('explorer').classList.contains('show')) renderFolder(state.explorerFolder);
+      if (getWindow('fotos') && getWindow('fotos').classList.contains('show')) renderPhotosApp();
+      showToast('Arquivos importados com sucesso.');
+      addNotification('Novos arquivos locais foram adicionados à biblioteca de mídia.');
+    }
+
+    async function addCustomWallpaperFile(file) {
+      if (!file || !isImageFile(file)) {
+        showToast('Escolha uma imagem JPG ou PNG.');
+        return;
+      }
+      const record = { id: `wall_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`, name: file.name, blob: file, size: file.size };
+      await putInStore(STORE_WALLPAPERS, record);
+      const url = createObjectURL(file);
+      state.customWallpapers.push({ id: record.id, url, name: file.name, imported: true });
+      renderWallpaperGrid();
+      applyWallpaper(url);
+      showToast('Wallpaper personalizado adicionado.');
+    }
+
+    async function clearImportedMedia() {
+      await clearStore(STORE_MEDIA);
+      mediaItems.splice(0, mediaItems.length, ...folderData['Imagens'].filter(item => !item.imported), ...folderData['Músicas'].filter(item => !item.imported), ...folderData['Vídeos'].filter(item => !item.imported));
+      folderData['Imagens'] = folderData['Imagens'].filter(item => !item.imported);
+      folderData['Músicas'] = folderData['Músicas'].filter(item => !item.imported);
+      folderData['Vídeos'] = folderData['Vídeos'].filter(item => !item.imported);
+      state.importedMedia = [];
+      renderMediaList();
+      if (getWindow('explorer').classList.contains('show')) renderFolder(state.explorerFolder);
+      showToast('Arquivos importados removidos.');
+    }
+
+    async function setupImports() {
+      await loadPersistedAssets();
+      renderWallpaperGrid();
+      renderMediaList();
+      const mediaInput = document.getElementById('mediaFileInput');
+      const wallpaperInput = document.getElementById('wallpaperFileInput');
+      const videoEditorInput = document.getElementById('videoEditorFileInput');
+      document.getElementById('importMediaBtn').addEventListener('click', () => mediaInput.click());
+      document.getElementById('uploadWallpaperBtn').addEventListener('click', () => wallpaperInput.click());
+      document.getElementById('clearImportedMediaBtn').addEventListener('click', clearImportedMedia);
+      document.getElementById('resetWallpaperBtn').addEventListener('click', () => applyWallpaper(wallpapers[0]));
+      mediaInput.addEventListener('change', async (e) => {
+        await addImportedMediaFiles(e.target.files);
+        e.target.value = '';
+      });
+      videoEditorInput.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file || !isVideoFile(file)) return showToast('Escolha um vídeo MP4.');
+        const entry = { name: file.name, type: 'video', src: createObjectURL(file), imported: true, size: file.size };
+        state.videoEditorFileName = file.name.replace(/\.[^.]+$/, '') + '-editado.webm';
+        const video = document.getElementById('videoEditorSource');
+        video.src = entry.src;
+        openApp('videoeditor');
+        e.target.value = '';
+      });
+      wallpaperInput.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        await addCustomWallpaperFile(file);
+        e.target.value = '';
+      });
+    }
+
+
+    function getPhotoItems() {
+      return [...folderData['Imagens']];
+    }
+
+    function renderPhotosApp() {
+      const list = document.getElementById('photosList');
+      const stage = document.getElementById('photosStage');
+      const items = getPhotoItems();
+      list.innerHTML = '';
+      if (!items.length) {
+        list.innerHTML = '<div class="media-empty">Nenhuma foto disponível.</div>';
+        stage.innerHTML = '<div>Importe uma imagem JPG ou PNG para aparecer aqui.</div>';
+        state.currentPhotoItem = null;
+        return;
+      }
+      if (!state.currentPhotoItem || !items.includes(state.currentPhotoItem)) state.currentPhotoItem = items[0];
+      items.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'photo-item' + (item === state.currentPhotoItem ? ' active' : '');
+        row.innerHTML = `<strong>${item.name}</strong><div style="font-size:12px;color:#6b7a8d;margin-top:4px;">${item.imported ? 'Importada do seu PC' : 'Biblioteca do sistema'}</div>`;
+        row.addEventListener('click', () => {
+          state.currentPhotoItem = item;
+          renderPhotosApp();
+        });
+        list.appendChild(row);
+      });
+      if (state.currentPhotoItem) {
+        stage.innerHTML = `<img src="${state.currentPhotoItem.src}" alt="${state.currentPhotoItem.name}">`;
+      }
+    }
+
+    function setupPhotosApp() {
+      document.getElementById('photosImportBtn').addEventListener('click', () => document.getElementById('mediaFileInput').click());
+      document.getElementById('photosRefreshBtn').addEventListener('click', renderPhotosApp);
+      document.getElementById('photoSetWallpaperBtn').addEventListener('click', () => {
+        if (!state.currentPhotoItem) return showToast('Escolha uma foto primeiro.');
+        applyWallpaper(state.currentPhotoItem.src);
+      });
+      document.getElementById('photoOpenMediaBtn').addEventListener('click', () => {
+        if (!state.currentPhotoItem) return showToast('Escolha uma foto primeiro.');
+        openApp('media');
+        openMediaItem(state.currentPhotoItem);
+      });
+    }
+
+    function renderSkype() {
+      const contacts = document.getElementById('skypeContacts');
+      const messages = document.getElementById('skypeMessages');
+      const header = document.getElementById('skypeChatHeader');
+      contacts.innerHTML = '<h3 style="margin:0 0 12px;">Skype</h3>';
+      const names = Object.keys(skypeData);
+      if (!state.currentSkypeContact) state.currentSkypeContact = names[0];
+      names.forEach(name => {
+        const item = document.createElement('div');
+        item.className = 'skype-contact' + (state.currentSkypeContact === name ? ' active' : '');
+        item.textContent = name;
+        item.addEventListener('click', () => {
+          state.currentSkypeContact = name;
+          renderSkype();
+        });
+        contacts.appendChild(item);
+      });
+      header.textContent = state.currentSkypeContact;
+      messages.innerHTML = '';
+      (skypeData[state.currentSkypeContact] || []).forEach((msg, idx) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'skype-bubble' + (idx % 2 ? ' me' : '');
+        bubble.textContent = msg;
+        messages.appendChild(bubble);
+      });
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function setupSkype() {
+      document.getElementById('skypeSendBtn').addEventListener('click', () => {
+        const input = document.getElementById('skypeInput');
+        const value = input.value.trim();
+        if (!value) return;
+        if (!state.currentSkypeContact) state.currentSkypeContact = Object.keys(skypeData)[0];
+        skypeData[state.currentSkypeContact].push(value);
+        input.value = '';
+        renderSkype();
+      });
+      document.getElementById('skypeInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('skypeSendBtn').click();
+      });
+    }
+
+    function getSearchEntries() {
+      const appEntries = [
+        { label: 'Bloco de Notas', type: 'Aplicativo', action: () => openApp('notepad') },
+        { label: 'Paint', type: 'Aplicativo', action: () => openApp('paint') },
+        { label: 'Calculadora', type: 'Aplicativo', action: () => openApp('calculator') },
+        { label: 'Explorador de Arquivos', type: 'Aplicativo', action: () => openApp('explorer') },
+        { label: 'Microsoft Edge', type: 'Aplicativo', action: () => openApp('edge') },
+        { label: 'Windows Store', type: 'Aplicativo', action: () => openApp('store') },
+        { label: 'Configurações', type: 'Aplicativo', action: () => openApp('settings') },
+        { label: 'Fotos & Mídia', type: 'Aplicativo', action: () => openApp('media') },
+        { label: 'Fotos', type: 'Aplicativo', action: () => openApp('fotos') },
+        { label: 'Editor de Vídeo', type: 'Aplicativo', action: () => openApp('videoeditor') },
+        { label: 'Skype', type: 'Aplicativo', action: () => openApp('skype') },
+        { label: 'Word', type: 'Aplicativo', action: () => openApp('word') },
+        { label: 'Excel', type: 'Aplicativo', action: () => openApp('excel') },
+        { label: 'PowerPoint', type: 'Aplicativo', action: () => openApp('powerpoint') },
+        { label: 'Lixeira', type: 'Aplicativo', action: () => openApp('recycle') }
+      ];
+      const fileEntries = Object.entries(folderData).flatMap(([folder, items]) => (items || []).map(item => ({
+        label: item.name,
+        type: `Arquivo em ${folder}`,
+        action: () => folder === 'Lixeira' ? openApp('recycle') : openFile(item)
+      })));
+      return [...appEntries, ...fileEntries];
+    }
+
+    function renderSearchResults(query) {
+      const panel = document.getElementById('searchPanel');
+      const results = document.getElementById('searchResults');
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        panel.classList.remove('open');
+        results.innerHTML = '';
+        return;
+      }
+      const matches = getSearchEntries().filter(item => item.label.toLowerCase().includes(q)).slice(0, 12);
+      panel.classList.add('open');
+      results.innerHTML = matches.length ? '' : '<div class="search-empty">Nada encontrado.</div>';
+      matches.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'search-result';
+        row.innerHTML = `<strong>${item.label}</strong><small>${item.type}</small>`;
+        row.addEventListener('click', () => {
+          item.action();
+          panel.classList.remove('open');
+          document.getElementById('taskSearchInput').value = '';
+        });
+        results.appendChild(row);
+      });
+    }
+
+    function setupSearch() {
+      const input = document.getElementById('taskSearchInput');
+      const btn = document.getElementById('taskSearchBtn');
+      const panel = document.getElementById('searchPanel');
+      input.addEventListener('input', () => renderSearchResults(input.value));
+      input.addEventListener('focus', () => renderSearchResults(input.value));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const first = panel.querySelector('.search-result');
+          if (first) first.click();
+        }
+      });
+      btn.addEventListener('click', () => renderSearchResults(input.value));
+      panel.addEventListener('click', e => e.stopPropagation());
+      document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target) && e.target !== input && e.target !== btn) panel.classList.remove('open');
+      });
+    }
+
+    function resizeVideoEditorCanvas() {
+      const canvas = document.getElementById('videoEditorCanvas');
+      const preview = canvas.parentElement;
+      if (!preview) return;
+      const w = Math.max(320, preview.clientWidth - 24);
+      const h = Math.max(180, preview.clientHeight - 24);
+      const ratio = 16 / 9;
+      let cw = w, ch = w / ratio;
+      if (ch > h) { ch = h; cw = h * ratio; }
+      canvas.style.width = `${cw}px`;
+      canvas.style.height = `${ch}px`;
+    }
+
+    function drawVideoEditorFrame() {
+      const video = document.getElementById('videoEditorSource');
+      const canvas = document.getElementById('videoEditorCanvas');
+      const ctx = canvas.getContext('2d');
+      const filter = document.getElementById('videoFilterSelect').value || 'none';
+      const text = document.getElementById('videoOverlayText').value.trim();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.filter = filter;
+      if (video.videoWidth && video.videoHeight) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.filter = 'none';
+      if (text) {
+        ctx.fillStyle = 'rgba(0,0,0,.45)';
+        ctx.fillRect(0, canvas.height - 72, canvas.width, 72);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 36px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, canvas.width / 2, canvas.height - 26);
+      }
+    }
+
+    function syncVideoTrimLabels() {
+      document.getElementById('videoStartLabel').textContent = `${Number(document.getElementById('videoTrimStart').value).toFixed(1)}s`;
+      document.getElementById('videoEndLabel').textContent = `${Number(document.getElementById('videoTrimEnd').value).toFixed(1)}s`;
+    }
+
+    function updateVideoEditorStatus(message) {
+      document.getElementById('videoEditorStatus').textContent = message;
+      document.getElementById('videoEditorTopStatus').textContent = message;
+    }
+
+    function videoEditorLoop() {
+      drawVideoEditorFrame();
+      requestAnimationFrame(videoEditorLoop);
+    }
+
+    function setupVideoEditor() {
+      const importBtn = document.getElementById('videoImportBtn');
+      const playBtn = document.getElementById('videoPlayBtn');
+      const pauseBtn = document.getElementById('videoPauseBtn');
+      const exportBtn = document.getElementById('videoExportBtn');
+      const video = document.getElementById('videoEditorSource');
+      const startRange = document.getElementById('videoTrimStart');
+      const endRange = document.getElementById('videoTrimEnd');
+      const volume = document.getElementById('videoPreviewVolume');
+      importBtn.addEventListener('click', () => document.getElementById('videoEditorFileInput').click());
+      playBtn.addEventListener('click', () => {
+        if (!video.src) return showToast('Importe um vídeo primeiro.');
+        const start = Number(startRange.value || 0);
+        const end = Number(endRange.value || video.duration || 0);
+        if (video.currentTime < start || video.currentTime >= end) video.currentTime = start;
+        video.play();
+      });
+      pauseBtn.addEventListener('click', () => video.pause());
+      volume.addEventListener('input', () => { video.volume = Number(volume.value); });
+      [startRange, endRange, document.getElementById('videoFilterSelect'), document.getElementById('videoOverlayText')].forEach(el => {
+        el.addEventListener('input', () => {
+          const start = Number(startRange.value || 0);
+          const end = Number(endRange.value || 0);
+          if (end < start) endRange.value = start;
+          syncVideoTrimLabels();
+          drawVideoEditorFrame();
+        });
+      });
+      video.addEventListener('loadedmetadata', () => {
+        const duration = Number(video.duration || 0);
+        startRange.max = String(duration);
+        endRange.max = String(duration);
+        startRange.value = '0';
+        endRange.value = String(duration);
+        syncVideoTrimLabels();
+        drawVideoEditorFrame();
+        updateVideoEditorStatus(`Vídeo carregado: ${state.videoEditorFileName.replace(/\.webm$/i,'')}`);
+      });
+      video.addEventListener('timeupdate', () => {
+        if (video.currentTime >= Number(endRange.value || video.duration || 0)) {
+          video.pause();
+        }
+      });
+      exportBtn.addEventListener('click', async () => {
+        if (!video.src) return showToast('Importe um vídeo primeiro.');
+        const canvas = document.getElementById('videoEditorCanvas');
+        const start = Number(startRange.value || 0);
+        const end = Number(endRange.value || video.duration || 0);
+        if (end <= start) return showToast('O fim precisa ser maior que o início.');
+        updateVideoEditorStatus('Exportando vídeo... aguarde até terminar.');
+        const canvasStream = canvas.captureStream(30);
+        let combinedStream = canvasStream;
+        try {
+          const audioStream = video.captureStream ? video.captureStream() : null;
+          if (audioStream && audioStream.getAudioTracks().length) {
+            combinedStream = new MediaStream([
+              ...canvasStream.getVideoTracks(),
+              ...audioStream.getAudioTracks()
+            ]);
+          }
+        } catch (err) {}
+        const chunks = [];
+        const recorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+        recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = state.videoEditorFileName || 'video-editado.webm';
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 3000);
+          updateVideoEditorStatus('Exportação concluída.');
+          showToast('Vídeo exportado em WebM.');
+        };
+        video.pause();
+        video.currentTime = start;
+        video.muted = false;
+        recorder.start();
+        await video.play();
+        const stopWhenReady = () => {
+          if (video.currentTime >= end || video.paused || video.ended) {
+            video.pause();
+            if (recorder.state !== 'inactive') recorder.stop();
+          } else {
+            requestAnimationFrame(stopWhenReady);
+          }
+        };
+        stopWhenReady();
+      });
+      videoEditorLoop();
+      resizeVideoEditorCanvas();
+    }
+
+    function openImportedVideoInEditor(item) {
+      const video = document.getElementById('videoEditorSource');
+      video.src = item.src;
+      state.videoEditorFileName = (item.name || 'video-editado').replace(/\.[^.]+$/, '') + '-editado.webm';
+      openApp('videoeditor');
+    }
+
 
     function openFile(item) {
       if (['image','audio','video'].includes(item.type)) {
@@ -820,6 +1542,9 @@
       if (app === 'paint') resizeCanvas();
       if (app === 'recycle') renderRecycleBin();
       if (app === 'media') renderMediaList();
+      if (app === 'fotos') renderPhotosApp();
+      if (app === 'skype') renderSkype();
+      if (app === 'videoeditor') resizeVideoEditorCanvas();
       updateTaskbarEntries();
     }
 
@@ -1287,29 +2012,35 @@
       actionCenter.addEventListener('click', e => e.stopPropagation());
     }
 
-    updateClocks();
-    setInterval(updateClocks, 1000);
-    bootToLogin();
-    initWallpaper();
-    setupWindows();
-    setupStart();
-    setupDesktopIcons();
-    setupDesktopSelection();
-    setupContextMenu();
-    setupExplorer();
-    setupNotepad();
-    setupCalculator();
-    setupPaint();
-    setupEdge();
-    setupSettings();
-    setupRecycle();
-    setupOffice();
-    setupPowerButtons();
-    setupLogin();
-    setupTaskbar();
-    renderMediaList();
-    window.addEventListener('resize', resizeCanvas);
-    setTimeout(resizeCanvas, 120);
+    (async () => {
+      updateClocks();
+      setInterval(updateClocks, 1000);
+      setupWindows();
+      setupStart();
+      setupDesktopIcons();
+      setupDesktopSelection();
+      setupContextMenu();
+      setupExplorer();
+      setupNotepad();
+      setupCalculator();
+      setupPaint();
+      setupEdge();
+      setupSettings();
+      setupRecycle();
+      setupOffice();
+      setupPowerButtons();
+      setupLogin();
+      setupTaskbar();
+      setupPhotosApp();
+      setupSkype();
+      setupSearch();
+      setupVideoEditor();
+      await setupImports();
+      initWallpaper();
+      bootToLogin();
+      window.addEventListener('resize', () => { resizeCanvas(); resizeVideoEditorCanvas(); });
+      setTimeout(() => { resizeCanvas(); resizeVideoEditorCanvas(); }, 120);
+    })();
   </script>
 </body>
 </html>
