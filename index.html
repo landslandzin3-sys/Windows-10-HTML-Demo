@@ -335,6 +335,78 @@
     .video-editor-side label { display:block; margin-bottom:12px; font-size:13px; }
     .video-editor-side input[type="range"], .video-editor-side input[type="text"], .video-editor-side select { width:100%; margin-top:6px; }
     .editor-status { font-size:12px; color:#555; margin-top:8px; }
+
+
+    .flstudio-wrap { display:grid; grid-template-columns: 250px 1fr; height:100%; background:#151515; color:#f5f5f5; }
+    .flstudio-sidebar { background:linear-gradient(180deg,#222,#171717); border-right:1px solid rgba(255,255,255,.08); padding:12px; overflow:auto; }
+    .fl-logo { font-size:20px; font-weight:700; color:#ff9f3d; margin-bottom:6px; }
+    .fl-sub { font-size:12px; color:#bbb; margin-bottom:14px; }
+    .flstudio-main { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
+    .fl-toolbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 12px; background:#1d1d1d; border-bottom:1px solid rgba(255,255,255,.08); }
+    .fl-toolbar button, .fl-toolbar select, .fl-toolbar input { background:#2a2a2a; color:#fff; border:1px solid rgba(255,255,255,.12); padding:7px 10px; }
+    .fl-toolbar button:hover { background:#333; }
+    .fl-status { margin-left:auto; font-size:12px; color:#b9b9b9; }
+    .fl-patterns { display:flex; align-items:center; gap:8px; overflow:auto; padding:10px 12px; background:#181818; border-bottom:1px solid rgba(255,255,255,.06); }
+    .fl-pattern-btn { border:1px solid rgba(255,255,255,.1); background:#242424; color:#fff; padding:7px 10px; cursor:pointer; white-space:nowrap; border-radius:8px; }
+    .fl-pattern-btn.active { background:#ff8c22; color:#111; border-color:#ff8c22; }
+    .fl-pattern-add { border-radius:8px; }
+    .fl-tab-btn { border-radius:999px; }
+    .flstudio-body { display:grid; grid-template-columns: minmax(0,1fr) 260px; min-height:0; flex:1; overflow:hidden; }
+    .fl-mode-view { min-height:0; display:none; }
+    .fl-mode-view.active { display:grid; }
+    .fl-pianoroll-wrap { grid-template-columns: 70px 1fr; min-width:0; min-height:0; }
+    .fl-note-labels { background:#121212; border-right:1px solid rgba(255,255,255,.08); overflow-y:auto; overflow-x:hidden; }
+    .fl-note-label { height:24px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; font-size:11px; color:#ccc; border-bottom:1px solid rgba(255,255,255,.04); }
+    .fl-editor-main { display:flex; flex-direction:column; min-width:0; min-height:0; }
+    .fl-ruler { position:sticky; top:0; z-index:4; display:grid; grid-auto-flow:column; background:#151515; border-bottom:1px solid rgba(255,255,255,.08); width:max-content; }
+    .fl-ruler-step { width:34px; height:24px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#9a9a9a; border-right:1px solid rgba(255,255,255,.06); }
+    .fl-grid-wrap { overflow:auto; background:#101010; position:relative; overscroll-behavior:contain; min-height:0; min-width:0; }
+    .fl-grid-stage { position:relative; width:max-content; }
+    .fl-grid { position:relative; display:grid; grid-template-columns: repeat(32, 34px); grid-template-rows: repeat(24, 24px); width:max-content; }
+    .fl-cell { width:34px; height:24px; border-right:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.05); cursor:crosshair; position:relative; }
+    .fl-cell.beat { box-shadow: inset -1px 0 0 rgba(255,255,255,.12); }
+    .fl-cell.black { background:rgba(255,255,255,.025); }
+    .fl-note-layer { position:absolute; left:0; top:0; pointer-events:none; }
+    .fl-note-block { position:absolute; height:20px; border-radius:6px; background:var(--note-color,#ff9f3d); box-shadow:0 0 0 1px rgba(255,255,255,.14) inset, 0 5px 12px rgba(0,0,0,.22); pointer-events:auto; cursor:grab; overflow:hidden; }
+    .fl-note-block span { display:block; font-size:10px; color:rgba(0,0,0,.65); padding:3px 16px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; }
+    .fl-note-resize { position:absolute; right:0; top:0; bottom:0; width:10px; cursor:ew-resize; background:linear-gradient(90deg, transparent, rgba(0,0,0,.18)); }
+    .fl-note-block.moving, .fl-clip.moving { opacity:.78; cursor:grabbing; }
+    .fl-playhead { position:absolute; top:0; bottom:0; width:2px; background:#ffd166; pointer-events:none; box-shadow:0 0 10px rgba(255,209,102,.35); z-index:5; }
+    .fl-sidepanel { background:#171717; border-left:1px solid rgba(255,255,255,.08); padding:12px; overflow:auto; display:flex; flex-direction:column; gap:10px; min-width:0; position:relative; z-index:2; }
+    .fl-current-inst { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:#121212; }
+    .fl-current-inst strong { font-size:13px; }
+    .fl-current-inst small { display:block; color:#9f9f9f; margin-top:4px; }
+    .fl-instrument-picker { display:none; flex-direction:column; gap:8px; max-height:320px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px; background:#101010; position:relative; z-index:3; }
+    .fl-instrument-picker.open { display:flex; }
+    .fl-instrument-list { display:flex; flex-direction:column; gap:8px; }
+    .fl-inst { border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px; background:#242424; cursor:pointer; }
+    .fl-inst.active { outline:2px solid #ff9f3d; background:#2c241c; }
+    .fl-inst-top { display:flex; justify-content:space-between; gap:8px; font-size:13px; font-weight:600; }
+    .fl-inst small { display:block; color:#bbb; margin-top:4px; }
+    .fl-mini { font-size:12px; color:#bbb; margin-top:12px; line-height:1.4; }
+    .fl-legend { display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:center; font-size:12px; margin-top:10px; }
+    .fl-dot { width:12px; height:12px; border-radius:3px; }
+    .fl-playlist-wrap { display:grid; grid-template-rows:auto 1fr; min-height:0; min-width:0; }
+    .fl-playlist-header { display:grid; grid-auto-flow:column; width:max-content; background:#151515; border-bottom:1px solid rgba(255,255,255,.08); }
+    .fl-playlist-bar { width:68px; height:28px; border-right:1px solid rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center; font-size:11px; color:#aaa; }
+    .fl-playlist-grid-wrap { overflow:auto; position:relative; background:#111; }
+    .fl-playlist-grid { position:relative; display:grid; grid-template-columns: 110px repeat(64, 68px); grid-template-rows: repeat(8, 42px); width:max-content; }
+    .fl-track-label { position:sticky; left:0; z-index:2; background:#171717; border-right:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.06); display:flex; align-items:center; padding:0 10px; font-size:12px; color:#ddd; }
+    .fl-playlist-cell { border-right:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.05); position:relative; }
+    .fl-playlist-cell.bar { box-shadow: inset -1px 0 0 rgba(255,255,255,.14); }
+    .fl-clip-layer { position:absolute; left:110px; top:28px; }
+    .fl-clip { position:absolute; height:34px; border-radius:8px; background:linear-gradient(180deg, rgba(255,159,61,.95), rgba(255,122,25,.92)); box-shadow:0 0 0 1px rgba(255,255,255,.16) inset, 0 6px 16px rgba(0,0,0,.24); color:#111; padding:6px 10px; font-size:12px; font-weight:700; cursor:grab; user-select:none; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .fl-clip.active-drag { opacity:.55; }
+    .fl-song-patterns { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .fl-song-pattern-chip { padding:8px 10px; border:1px dashed rgba(255,255,255,.16); border-radius:8px; cursor:grab; background:#232323; color:#eee; }
+    .fl-song-pattern-chip.active { outline:2px solid #ff9f3d; }
+    @media (max-width: 980px) {
+      .flstudio-wrap, .flstudio-body, .fl-pianoroll-wrap { grid-template-columns:1fr; }
+      .flstudio-body { grid-template-rows:minmax(0,1fr) auto; }
+      .flstudio-sidebar, .fl-note-labels, .fl-sidepanel { border-right:none; border-left:none; border-bottom:1px solid rgba(255,255,255,.08); }
+      .fl-note-labels { display:none; }
+    }
+
     @media (max-width: 980px) {
       .photos-layout, .skype-layout, .video-editor-main { grid-template-columns:1fr; }
       .photos-sidebar, .skype-sidebar, .video-editor-side { border-right:none; border-left:none; border-bottom:1px solid #ddd; }
@@ -389,6 +461,7 @@
         <div class="desktop-icon" data-app="fotos" data-label="Fotos"><div class="icon">🖼️</div><div class="label">Fotos</div></div>
         <div class="desktop-icon" data-app="videoeditor" data-label="Editor de Vídeo"><div class="icon">🎬</div><div class="label">Editor de Vídeo</div></div>
         <div class="desktop-icon" data-app="skype" data-label="Skype"><div class="icon">💬</div><div class="label">Skype</div></div>
+        <div class="desktop-icon" data-app="flstudio" data-label="Criador de Música"><div class="icon">🎹</div><div class="label">Criador de Música</div></div>
       </div>
 
       <div id="selectionBox" class="selection-box"></div>
@@ -422,6 +495,7 @@
         <div class="start-item" data-open="fotos">🖼️ Fotos</div>
         <div class="start-item" data-open="videoeditor">🎬 Editor de Vídeo</div>
         <div class="start-item" data-open="skype">💬 Skype</div>
+        <div class="start-item" data-open="flstudio">🎹 Criador de Música</div>
       </div>
       <div class="start-tiles">
         <h3>Fixado</h3>
@@ -434,6 +508,7 @@
           <div class="tile dark" data-open="fotos">Fotos</div>
           <div class="tile" data-open="videoeditor">Editor Vídeo</div>
           <div class="tile dark" data-open="skype">Skype</div>
+          <div class="tile" data-open="flstudio">Criador de Música</div>
           <div class="tile dark" data-open="settings">Configurações</div>
         </div>
       </div>
@@ -707,6 +782,84 @@
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
     </div>
 
+
+
+    <!-- Criador de Música -->
+    <div class="window" id="win-flstudio" data-app="flstudio" data-title="Criador de Música" style="left:160px; top:70px; width:1140px; height:700px;">
+      <div class="titlebar"><div class="title">Criador de Música</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body flstudio-wrap">
+        <div class="flstudio-sidebar">
+          <div class="fl-logo">Criador de Música</div>
+          <div class="fl-sub">HTML Groove Machine</div>
+          <div class="fl-mini">Agora com piano roll rolável, patterns infinitas, playlist livre e exportação em WAV.</div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#ff9f3d"></span><span>Piano</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#7bdff2"></span><span>Bass</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#b388ff"></span><span>Lead</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#98f5a5"></span><span>Guitar</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#f6bd60"></span><span>Pad</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#84dcc6"></span><span>Pluck</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#a0e548"></span><span>Kick</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#ff6b6b"></span><span>Snare</span></div>
+          <div class="fl-legend"><span class="fl-dot" style="background:#ffd166"></span><span>Hi-Hat</span></div>
+          <div class="fl-song-patterns" id="flSongPatternPalette"></div>
+        </div>
+        <div class="flstudio-main">
+          <div class="fl-toolbar">
+            <button id="flPlayBtn">▶ Play</button>
+            <button id="flSongPlayBtn">🎼 Tocar playlist</button>
+            <button id="flStopBtn">■ Stop</button>
+            <button id="flClearPatternBtn">Limpar pattern</button>
+            <button id="flExportBtn">Exportar música</button>
+            <label class="fl-toolbar-field">Instrumento <select id="flToolbarInstrument"></select></label>
+            <label>BPM <input id="flBpmInput" type="number" min="60" max="220" value="120" style="width:74px"></label>
+            <label>Passos <select id="flStepsSelect"><option value="16">16</option><option value="24">24</option><option value="32" selected>32</option><option value="48">48</option><option value="64">64</option></select></label>
+            <label>Modo <select id="flPlayMode"><option value="pattern">Pattern</option><option value="song">Song</option></select></label>
+            <div class="fl-status" id="flStatus">Pattern 1 pronto.</div>
+          </div>
+          <div class="fl-patterns" id="flPatterns"></div>
+          <div class="flstudio-body">
+            <div class="fl-mode-view fl-pianoroll-wrap active" id="flPianoView">
+              <div class="fl-note-labels" id="flNoteLabels"></div>
+              <div class="fl-editor-main">
+                <div class="fl-ruler" id="flRuler"></div>
+                <div class="fl-grid-wrap" id="flGridWrap">
+                  <div class="fl-grid-stage" id="flGridStage">
+                    <div class="fl-playhead" id="flPlayhead"></div>
+                    <div class="fl-grid" id="flGrid"></div>
+                    <div class="fl-note-layer" id="flNoteLayer"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fl-mode-view fl-playlist-wrap" id="flSongView">
+              <div class="fl-playlist-header" id="flPlaylistHeader"></div>
+              <div class="fl-playlist-grid-wrap" id="flPlaylistWrap">
+                <div class="fl-playhead" id="flSongPlayhead"></div>
+                <div class="fl-playlist-grid" id="flPlaylistGrid"></div>
+                <div class="fl-clip-layer" id="flClipLayer"></div>
+              </div>
+            </div>
+            <div class="fl-sidepanel">
+              <strong>Instrumentos</strong>
+              <div class="fl-mini">Clique numa célula vazia para criar uma nota. Clique numa nota para apagar. Arraste a nota para mover e use a alça da direita para expandir.</div>
+              <div class="fl-current-inst" id="flCurrentInstrumentCard">
+                <div>
+                  <strong id="flCurrentInstrumentName">Piano</strong>
+                  <small id="flCurrentInstrumentMeta">Instrumento melódico</small>
+                </div>
+                <button id="flInstrumentPickerBtn">Escolher</button>
+              </div>
+              <div class="fl-instrument-picker" id="flInstrumentPicker">
+                <div class="fl-instrument-list" id="flInstrumentList"></div>
+              </div>
+              <div class="fl-mini" id="flInstrumentInfo">Abas: Piano Roll para desenhar notas, Playlist para montar a música juntando patterns.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
     <div id="searchPanel" class="search-panel">
       <div class="search-header">Pesquisar no Windows</div>
       <div id="searchResults"></div>
@@ -729,6 +882,7 @@
         <button class="task-app" data-open="edge" id="task-edge" title="Edge">🌐</button>
         <button class="task-app" data-open="explorer" id="task-explorer" title="Explorador">📁</button>
         <button class="task-app" data-open="store" id="task-store" title="Store">🛍️</button>
+        <button class="task-app" data-open="flstudio" id="task-flstudio" title="Criador de Música">🎹</button>
         <div id="taskbarWindows"></div>
       </div>
       <div class="tb-right">
@@ -767,6 +921,8 @@
       currentPhotoItem: null,
       currentSkypeContact: null,
       videoEditorFileName: 'video-editado.webm',
+      audioContext: null,
+      fl: null,
     };
 
     const bootMessages = ['Preparando o Windows', 'Configurando dispositivos', 'Instalando recursos', 'Quase pronto'];
@@ -1285,6 +1441,900 @@
       });
     }
 
+    function getFLDefaultState() {
+      return {
+        bpm: 120,
+        steps: 32,
+        rows: 36,
+        currentPattern: 0,
+        currentInstrument: 'piano',
+        currentView: 'piano',
+        playMode: 'pattern',
+        playing: false,
+        currentStep: 0,
+        timer: null,
+        playlistBars: 64,
+        playlistTracks: 8,
+        draggedPatternId: null,
+        draggedClipId: null,
+        instruments: [
+          { id: 'piano', name: 'Piano', color: '#ff9f3d', kind: 'tone', wave: 'triangle' },
+          { id: 'bass', name: 'Bass', color: '#7bdff2', kind: 'tone', wave: 'sawtooth' },
+          { id: 'lead', name: 'Lead', color: '#b388ff', kind: 'tone', wave: 'square' },
+          { id: 'guitar', name: 'Guitar', color: '#98f5a5', kind: 'tone', wave: 'triangle', detune: 6 },
+          { id: 'pad', name: 'Pad', color: '#f6bd60', kind: 'tone', wave: 'sine', detune: -4 },
+          { id: 'pluck', name: 'Pluck', color: '#84dcc6', kind: 'tone', wave: 'square', detune: 0 },
+          { id: 'kick', name: 'Kick', color: '#a0e548', kind: 'drum' },
+          { id: 'snare', name: 'Snare', color: '#ff6b6b', kind: 'drum' },
+          { id: 'hat', name: 'Hi-Hat', color: '#ffd166', kind: 'drum' }
+        ],
+        patterns: [{ id: 'pattern-1', name: 'Pattern 1', notes: [] }],
+        playlist: []
+      };
+    }
+
+    function normalizeFLPattern(pattern, index) {
+      return {
+        id: pattern.id || `pattern-${index + 1}`,
+        name: pattern.name || `Pattern ${index + 1}`,
+        notes: (pattern.notes || []).map((note, noteIndex) => ({
+          id: note.id || `note-${Date.now()}-${index}-${noteIndex}-${Math.random().toString(16).slice(2, 7)}`,
+          row: Number(note.row ?? note.lane ?? 0),
+          col: Number(note.col ?? note.start ?? 0),
+          length: Math.max(1, Number(note.length || 1)),
+          instrument: note.instrument || 'piano'
+        }))
+      };
+    }
+
+    function loadFLState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('win10_flstudio') || 'null');
+        if (saved && Array.isArray(saved.patterns) && Array.isArray(saved.instruments)) {
+          const base = getFLDefaultState();
+          state.fl = {
+            ...base,
+            ...saved,
+            rows: Math.max(24, Number(saved.rows || base.rows)),
+            currentView: saved.currentView || 'piano',
+            playMode: saved.playMode || 'pattern',
+            playing: false,
+            currentStep: 0,
+            timer: null,
+            draggedPatternId: null,
+            draggedClipId: null,
+            patterns: saved.patterns.map(normalizeFLPattern),
+            playlist: (saved.playlist || []).map((clip, index) => ({
+              id: clip.id || `clip-${index}-${Math.random().toString(16).slice(2, 8)}`,
+              patternId: clip.patternId || (saved.patterns[0]?.id || 'pattern-1'),
+              track: Math.max(0, Math.min((saved.playlistTracks || base.playlistTracks) - 1, Number(clip.track || 0))),
+              startBar: Math.max(0, Number(clip.startBar || 0))
+            }))
+          };
+          if (!state.fl.patterns.length) state.fl.patterns = base.patterns;
+          return;
+        }
+      } catch (err) {
+        console.error('Erro ao carregar Criador de Música', err);
+      }
+      state.fl = getFLDefaultState();
+    }
+
+    function saveFLState() {
+      if (!state.fl) return;
+      const snapshot = {
+        bpm: state.fl.bpm,
+        steps: state.fl.steps,
+        rows: state.fl.rows,
+        currentPattern: state.fl.currentPattern,
+        currentInstrument: state.fl.currentInstrument,
+        currentView: state.fl.currentView,
+        playMode: state.fl.playMode,
+        playlistBars: state.fl.playlistBars,
+        playlistTracks: state.fl.playlistTracks,
+        instruments: state.fl.instruments,
+        patterns: state.fl.patterns,
+        playlist: state.fl.playlist
+      };
+      localStorage.setItem('win10_flstudio', JSON.stringify(snapshot));
+    }
+
+    function ensureAudioContext() {
+      if (!state.audioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        state.audioContext = new AudioCtx();
+      }
+      if (state.audioContext.state === 'suspended') state.audioContext.resume();
+      return state.audioContext;
+    }
+
+    function flNoteNameFromRow(row) {
+      const names = ['B','A#','A','G#','G','F#','F','E','D#','D','C#','C'];
+      const midi = 96 - row;
+      const name = names[midi % 12];
+      const octave = Math.floor(midi / 12) - 1;
+      return `${name}${octave}`;
+    }
+
+    function flFrequencyFromRow(row) {
+      const midi = 96 - row;
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function flCurrentPattern() {
+      return state.fl.patterns[state.fl.currentPattern];
+    }
+
+    function flPatternById(id) {
+      return state.fl.patterns.find(pattern => pattern.id === id);
+    }
+
+    function flPatternLengthInBars(pattern) {
+      return Math.max(1, Math.ceil((state.fl.steps || 32) / 16));
+    }
+
+    function flGetSongLengthSteps() {
+      const maxStep = state.fl.playlist.reduce((largest, clip) => {
+        const pattern = flPatternById(clip.patternId);
+        const clipEnd = clip.startBar * 16 + (pattern ? state.fl.steps : 0);
+        return Math.max(largest, clipEnd);
+      }, 0);
+      return Math.max(state.fl.steps, maxStep || state.fl.steps);
+    }
+
+    function applyFLCurrentInstrument(instId) {
+      const exists = state.fl.instruments.some(inst => inst.id === instId);
+      if (!exists) return;
+      state.fl.currentInstrument = instId;
+      const current = state.fl.instruments.find(inst => inst.id === instId);
+      document.getElementById('flInstrumentInfo').textContent = `${current?.name || 'Instrumento'} selecionado. Clique numa célula vazia para criar nota, arraste notas para mover e use a Playlist para montar a música.`;
+      document.getElementById('flInstrumentPicker').classList.remove('open');
+      renderFLInstrumentList();
+      saveFLState();
+    }
+
+    function renderFLToolbarInstrumentSelect() {
+      const select = document.getElementById('flToolbarInstrument');
+      if (!select) return;
+      select.innerHTML = '';
+      state.fl.instruments.forEach(inst => {
+        const option = document.createElement('option');
+        option.value = inst.id;
+        option.textContent = inst.name;
+        if (inst.id === state.fl.currentInstrument) option.selected = true;
+        select.appendChild(option);
+      });
+    }
+
+    function renderFLInstrumentList() {
+      const wrap = document.getElementById('flInstrumentList');
+      const current = state.fl.instruments.find(inst => inst.id === state.fl.currentInstrument) || state.fl.instruments[0];
+      document.getElementById('flCurrentInstrumentName').textContent = current?.name || 'Instrumento';
+      document.getElementById('flCurrentInstrumentMeta').textContent = current?.kind === 'drum' ? 'Bateria / percussão' : 'Instrumento melódico';
+      renderFLToolbarInstrumentSelect();
+      wrap.innerHTML = '';
+      state.fl.instruments.forEach(inst => {
+        const el = document.createElement('div');
+        el.className = 'fl-inst' + (inst.id === state.fl.currentInstrument ? ' active' : '');
+        el.innerHTML = `<div class="fl-inst-top"><span>${inst.name}</span><span style="color:${inst.color}">●</span></div><small>${inst.kind === 'drum' ? 'Bateria' : 'Instrumento melódico'}</small>`;
+        el.addEventListener('click', () => applyFLCurrentInstrument(inst.id));
+        wrap.appendChild(el);
+      });
+    }
+
+    function renderFLPatternPalette() {
+      const wrap = document.getElementById('flSongPatternPalette');
+      wrap.innerHTML = '';
+      state.fl.patterns.forEach((pattern, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'fl-song-pattern-chip' + (index === state.fl.currentPattern ? ' active' : '');
+        chip.textContent = pattern.name;
+        chip.draggable = true;
+        chip.addEventListener('dragstart', () => { state.fl.draggedPatternId = pattern.id; });
+        chip.addEventListener('dragend', () => { state.fl.draggedPatternId = null; });
+        chip.addEventListener('click', () => {
+          state.fl.currentPattern = index;
+          renderFLPatterns();
+          renderFLPatternPalette();
+          renderFLGrid();
+          saveFLState();
+        });
+        wrap.appendChild(chip);
+      });
+    }
+
+    function renderFLPatterns() {
+      const wrap = document.getElementById('flPatterns');
+      wrap.innerHTML = '';
+      const pianoBtn = document.createElement('button');
+      pianoBtn.className = 'fl-pattern-btn fl-tab-btn' + (state.fl.currentView === 'piano' ? ' active' : '');
+      pianoBtn.textContent = 'Piano Roll';
+      pianoBtn.addEventListener('click', () => setFLView('piano'));
+      wrap.appendChild(pianoBtn);
+      const songBtn = document.createElement('button');
+      songBtn.className = 'fl-pattern-btn fl-tab-btn' + (state.fl.currentView === 'song' ? ' active' : '');
+      songBtn.textContent = 'Playlist';
+      songBtn.addEventListener('click', () => setFLView('song'));
+      wrap.appendChild(songBtn);
+      state.fl.patterns.forEach((pattern, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'fl-pattern-btn' + (index === state.fl.currentPattern ? ' active' : '');
+        btn.textContent = pattern.name;
+        btn.draggable = true;
+        btn.addEventListener('click', () => {
+          state.fl.currentPattern = index;
+          document.getElementById('flStatus').textContent = `${pattern.name} selecionado.`;
+          renderFLPatterns();
+          renderFLPatternPalette();
+          renderFLGrid();
+          saveFLState();
+        });
+        btn.addEventListener('dragstart', () => { state.fl.draggedPatternId = pattern.id; });
+        btn.addEventListener('dragend', () => { state.fl.draggedPatternId = null; });
+        wrap.appendChild(btn);
+      });
+      const addBtn = document.createElement('button');
+      addBtn.className = 'fl-pattern-btn fl-pattern-add';
+      addBtn.textContent = '+ Pattern';
+      addBtn.addEventListener('click', () => {
+        const nextIndex = state.fl.patterns.length + 1;
+        state.fl.patterns.push({ id: `pattern-${Date.now()}`, name: `Pattern ${nextIndex}`, notes: [] });
+        state.fl.currentPattern = state.fl.patterns.length - 1;
+        saveFLState();
+        renderFLPatterns();
+        renderFLPatternPalette();
+        renderFLGrid();
+        renderFLPlaylist();
+        document.getElementById('flStatus').textContent = `Pattern ${nextIndex} criada.`;
+      });
+      wrap.appendChild(addBtn);
+    }
+
+    function setFLView(view) {
+      state.fl.currentView = view;
+      document.getElementById('flPianoView').classList.toggle('active', view === 'piano');
+      document.getElementById('flSongView').classList.toggle('active', view === 'song');
+      if (view === 'song') {
+        state.fl.playMode = 'song';
+        document.getElementById('flPlayMode').value = 'song';
+      }
+      renderFLPatterns();
+      saveFLState();
+    }
+
+    function renderFLNoteLabels() {
+      const wrap = document.getElementById('flNoteLabels');
+      wrap.innerHTML = '';
+      for (let row = 0; row < state.fl.rows; row++) {
+        const item = document.createElement('div');
+        item.className = 'fl-note-label';
+        item.textContent = flNoteNameFromRow(row);
+        wrap.appendChild(item);
+      }
+    }
+
+    function renderFLRuler() {
+      const ruler = document.getElementById('flRuler');
+      ruler.innerHTML = '';
+      ruler.style.gridTemplateColumns = `repeat(${state.fl.steps}, 34px)`;
+      for (let step = 0; step < state.fl.steps; step++) {
+        const cell = document.createElement('div');
+        cell.className = 'fl-ruler-step';
+        cell.textContent = step % 4 === 0 ? String(Math.floor(step / 4) + 1) : '·';
+        ruler.appendChild(cell);
+      }
+    }
+
+    function flCreateNote(row, col, length = 1, instrumentId = state.fl.currentInstrument) {
+      const safeRow = Math.max(0, Math.min(state.fl.rows - 1, row));
+      const safeCol = Math.max(0, Math.min(state.fl.steps - 1, col));
+      return { id: `note-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`, row: safeRow, col: safeCol, length: Math.max(1, Math.min(state.fl.steps - safeCol, length)), instrument: instrumentId };
+    }
+
+    function flFindNoteAt(row, col, excludeId = null) {
+      return flCurrentPattern().notes.find(note => note.id !== excludeId && note.row === row && col >= note.col && col < note.col + note.length);
+    }
+
+    function flRemoveNote(noteId) {
+      const pattern = flCurrentPattern();
+      pattern.notes = pattern.notes.filter(note => note.id !== noteId);
+      saveFLState();
+    }
+
+    function renderFLGrid() {
+      const grid = document.getElementById('flGrid');
+      const layer = document.getElementById('flNoteLayer');
+      const stage = document.getElementById('flGridStage');
+      const playhead = document.getElementById('flPlayhead');
+      grid.innerHTML = '';
+      layer.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${state.fl.steps}, 34px)`;
+      grid.style.gridTemplateRows = `repeat(${state.fl.rows}, 24px)`;
+      const blackRows = new Set(['A#','G#','F#','D#','C#']);
+      for (let row = 0; row < state.fl.rows; row++) {
+        const noteName = flNoteNameFromRow(row).replace(/\d+/g, '');
+        for (let col = 0; col < state.fl.steps; col++) {
+          const cell = document.createElement('div');
+          cell.className = 'fl-cell' + (blackRows.has(noteName) ? ' black' : '') + (col % 4 === 3 ? ' beat' : '');
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          grid.appendChild(cell);
+        }
+      }
+      stage.style.width = `${state.fl.steps * 34}px`;
+      stage.style.height = `${state.fl.rows * 24}px`;
+      layer.style.width = `${state.fl.steps * 34}px`;
+      layer.style.height = `${state.fl.rows * 24}px`;
+      flCurrentPattern().notes.forEach(note => {
+        const inst = state.fl.instruments.find(i => i.id === note.instrument);
+        const el = document.createElement('div');
+        el.className = 'fl-note-block';
+        el.dataset.noteId = note.id;
+        el.style.left = `${note.col * 34 + 1}px`;
+        el.style.top = `${note.row * 24 + 2}px`;
+        el.style.width = `${Math.max(1, note.length * 34 - 2)}px`;
+        if (inst) el.style.setProperty('--note-color', inst.color);
+        el.title = `${inst?.name || 'Instrumento'} • ${flNoteNameFromRow(note.row)} • passo ${note.col + 1}`;
+        el.innerHTML = `<span>${inst?.name || 'Nota'}</span><div class="fl-note-resize"></div>`;
+        layer.appendChild(el);
+      });
+      playhead.style.left = '0px';
+      playhead.style.height = `${state.fl.rows * 24}px`;
+      renderFLPlaylist();
+    }
+
+    function flGetPlaylistDropPosition(evt) {
+      const wrap = document.getElementById('flPlaylistWrap');
+      const rect = wrap.getBoundingClientRect();
+      const x = evt.clientX - rect.left + wrap.scrollLeft - 110;
+      const y = evt.clientY - rect.top + wrap.scrollTop - 28;
+      return {
+        track: Math.max(0, Math.min(state.fl.playlistTracks - 1, Math.floor(y / 42))),
+        bar: Math.max(0, Math.min(state.fl.playlistBars - 1, Math.floor(x / 68)))
+      };
+    }
+
+    function renderFLPlaylist() {
+      const header = document.getElementById('flPlaylistHeader');
+      const grid = document.getElementById('flPlaylistGrid');
+      const layer = document.getElementById('flClipLayer');
+      const songPlayhead = document.getElementById('flSongPlayhead');
+      header.innerHTML = '';
+      grid.innerHTML = '';
+      layer.innerHTML = '';
+      header.style.gridTemplateColumns = `repeat(${state.fl.playlistBars}, 68px)`;
+      for (let bar = 0; bar < state.fl.playlistBars; bar++) {
+        const h = document.createElement('div');
+        h.className = 'fl-playlist-bar';
+        h.textContent = bar + 1;
+        header.appendChild(h);
+      }
+      grid.style.gridTemplateColumns = `110px repeat(${state.fl.playlistBars}, 68px)`;
+      grid.style.gridTemplateRows = `repeat(${state.fl.playlistTracks}, 42px)`;
+      for (let track = 0; track < state.fl.playlistTracks; track++) {
+        const label = document.createElement('div');
+        label.className = 'fl-track-label';
+        label.textContent = `Track ${track + 1}`;
+        grid.appendChild(label);
+        for (let bar = 0; bar < state.fl.playlistBars; bar++) {
+          const cell = document.createElement('div');
+          cell.className = 'fl-playlist-cell' + (bar % 4 === 3 ? ' bar' : '');
+          grid.appendChild(cell);
+        }
+      }
+      layer.style.width = `${state.fl.playlistBars * 68}px`;
+      layer.style.height = `${state.fl.playlistTracks * 42}px`;
+      state.fl.playlist.forEach(clip => {
+        const pattern = flPatternById(clip.patternId);
+        const clipEl = document.createElement('div');
+        const barsWide = flPatternLengthInBars(pattern);
+        clipEl.className = 'fl-clip';
+        clipEl.dataset.clipId = clip.id;
+        clipEl.style.left = `${clip.startBar * 68 + 3}px`;
+        clipEl.style.top = `${clip.track * 42 + 4}px`;
+        clipEl.style.width = `${Math.max(60, barsWide * 68 - 6)}px`;
+        clipEl.textContent = pattern?.name || 'Pattern';
+        clipEl.addEventListener('dblclick', () => {
+          state.fl.currentPattern = Math.max(0, state.fl.patterns.findIndex(item => item.id === clip.patternId));
+          setFLView('piano');
+          renderFLPatternPalette();
+          renderFLGrid();
+          document.getElementById('flStatus').textContent = `${pattern?.name || 'Pattern'} aberta no piano roll.`;
+        });
+        layer.appendChild(clipEl);
+      });
+      songPlayhead.style.left = '110px';
+      songPlayhead.style.height = `${state.fl.playlistTracks * 42}px`;
+      renderFLPatternPalette();
+    }
+
+    function flUpdatePlayhead(step) {
+      document.getElementById('flPlayhead').style.left = `${step * 34}px`;
+    }
+
+    function flUpdateSongPlayhead(songStep) {
+      document.getElementById('flSongPlayhead').style.left = `${110 + (songStep / 16) * 68}px`;
+    }
+
+    function flScheduleDrum(ctx, destination, inst, startTime) {
+      const gain = ctx.createGain();
+      gain.connect(destination);
+      if (inst.id === 'kick') {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(150, startTime);
+        osc.frequency.exponentialRampToValueAtTime(45, startTime + 0.18);
+        gain.gain.setValueAtTime(0.9, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.18);
+        osc.connect(gain);
+        osc.start(startTime);
+        osc.stop(startTime + 0.2);
+        return;
+      }
+      const duration = inst.id === 'hat' ? 0.045 : 0.16;
+      const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * duration)), ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = inst.id === 'hat' ? 'highpass' : 'bandpass';
+      filter.frequency.value = inst.id === 'hat' ? 7000 : 1800;
+      gain.gain.setValueAtTime(inst.id === 'hat' ? 0.18 : 0.34, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      source.connect(filter).connect(gain);
+      source.start(startTime);
+      source.stop(startTime + duration + 0.01);
+    }
+
+    function flScheduleTone(ctx, destination, inst, row, lengthSteps, startTime, bpm) {
+      const freq = flFrequencyFromRow(row);
+      const oscA = ctx.createOscillator();
+      const oscB = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      oscA.type = inst.wave || 'triangle';
+      oscB.type = inst.wave === 'square' ? 'triangle' : (inst.wave || 'triangle');
+      oscA.frequency.setValueAtTime(freq, startTime);
+      oscB.frequency.setValueAtTime(freq * Math.pow(2, (inst.detune || 0) / 1200), startTime);
+      filter.type = inst.id === 'bass' ? 'lowpass' : 'bandpass';
+      filter.frequency.value = inst.id === 'bass' ? 900 : inst.id === 'pad' ? 1500 : 2600;
+      const hold = Math.max(0.14, (60 / bpm / 4) * lengthSteps * 0.9);
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(inst.id === 'bass' ? 0.24 : inst.id === 'pad' ? 0.12 : 0.16, startTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.05, startTime + hold);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + hold + 0.08);
+      oscA.connect(filter).connect(gain).connect(destination);
+      oscB.connect(filter);
+      oscA.start(startTime); oscB.start(startTime);
+      oscA.stop(startTime + hold + 0.12); oscB.stop(startTime + hold + 0.12);
+    }
+
+    function flScheduleNoteOnContext(ctx, destination, inst, row, lengthSteps, startTime, bpm) {
+      if (inst.kind === 'drum') {
+        flScheduleDrum(ctx, destination, inst, startTime);
+      } else {
+        flScheduleTone(ctx, destination, inst, row, lengthSteps, startTime, bpm);
+      }
+    }
+
+    function flPlayTone(inst, row, lengthSteps) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      flScheduleNoteOnContext(ctx, ctx.destination, inst, row, lengthSteps, ctx.currentTime, state.fl.bpm);
+    }
+
+    function flTriggerStep(step) {
+      if (state.fl.playMode === 'song') {
+        const stepsPerSong = flGetSongLengthSteps();
+        const currentSongStep = step % stepsPerSong;
+        state.fl.playlist.forEach(clip => {
+          const pattern = flPatternById(clip.patternId);
+          if (!pattern) return;
+          const clipStartStep = clip.startBar * 16;
+          const localStep = currentSongStep - clipStartStep;
+          if (localStep < 0 || localStep >= state.fl.steps) return;
+          pattern.notes.forEach(note => {
+            if (note.col !== localStep) return;
+            const inst = state.fl.instruments.find(i => i.id === note.instrument);
+            if (inst) flPlayTone(inst, note.row, note.length);
+          });
+        });
+        flUpdateSongPlayhead(currentSongStep);
+        flUpdatePlayhead(currentSongStep % state.fl.steps);
+        return;
+      }
+      flCurrentPattern().notes.forEach(note => {
+        if (note.col !== step) return;
+        const inst = state.fl.instruments.find(i => i.id === note.instrument);
+        if (inst) flPlayTone(inst, note.row, note.length);
+      });
+      flUpdatePlayhead(step);
+      flUpdateSongPlayhead(0);
+    }
+
+    function stopFLPlayback(reset = true) {
+      if (!state.fl) return;
+      state.fl.playing = false;
+      clearInterval(state.fl.timer);
+      state.fl.timer = null;
+      if (reset) {
+        state.fl.currentStep = 0;
+        flUpdatePlayhead(0);
+        flUpdateSongPlayhead(0);
+      }
+      document.getElementById('flStatus').textContent = `${state.fl.playMode === 'song' ? 'Música' : flCurrentPattern().name} parado.`;
+    }
+
+    function startFLPlayback() {
+      if (!state.fl) return;
+      ensureAudioContext();
+      stopFLPlayback(false);
+      state.fl.playing = true;
+      const intervalMs = (60 / state.fl.bpm / 4) * 1000;
+      const loopSteps = state.fl.playMode === 'song' ? flGetSongLengthSteps() : state.fl.steps;
+      if (state.fl.currentStep >= loopSteps) state.fl.currentStep = 0;
+      document.getElementById('flStatus').textContent = state.fl.playMode === 'song' ? `Tocando música completa em ${state.fl.bpm} BPM.` : `Tocando ${flCurrentPattern().name} em ${state.fl.bpm} BPM.`;
+      flTriggerStep(state.fl.currentStep);
+      state.fl.timer = setInterval(() => {
+        state.fl.currentStep = (state.fl.currentStep + 1) % loopSteps;
+        flTriggerStep(state.fl.currentStep);
+      }, intervalMs);
+    }
+
+    function toggleFLPlayback() {
+      if (!state.fl) return;
+      if (state.fl.playing) stopFLPlayback(false); else startFLPlayback();
+    }
+
+    async function exportFLMusic() {
+      if (!state.fl) return;
+      const button = document.getElementById('flExportBtn');
+      const previousLabel = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Exportando...';
+      try {
+        const sampleRate = 44100;
+        const stepDuration = 60 / state.fl.bpm / 4;
+        const totalSteps = state.fl.playMode === 'song' ? flGetSongLengthSteps() : state.fl.steps;
+        const totalDuration = Math.max(1, totalSteps * stepDuration + 1);
+        const offline = new OfflineAudioContext(2, Math.ceil(sampleRate * totalDuration), sampleRate);
+        if (state.fl.playMode === 'song') {
+          state.fl.playlist.forEach(clip => {
+            const pattern = flPatternById(clip.patternId);
+            if (!pattern) return;
+            pattern.notes.forEach(note => {
+              const inst = state.fl.instruments.find(i => i.id === note.instrument);
+              if (!inst) return;
+              const startTime = (clip.startBar * 16 + note.col) * stepDuration;
+              flScheduleNoteOnContext(offline, offline.destination, inst, note.row, note.length, startTime, state.fl.bpm);
+            });
+          });
+        } else {
+          flCurrentPattern().notes.forEach(note => {
+            const inst = state.fl.instruments.find(i => i.id === note.instrument);
+            if (!inst) return;
+            flScheduleNoteOnContext(offline, offline.destination, inst, note.row, note.length, note.col * stepDuration, state.fl.bpm);
+          });
+        }
+        const rendered = await offline.startRendering();
+        const wav = flAudioBufferToWav(rendered);
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${state.fl.playMode === 'song' ? 'musica' : (flCurrentPattern().name || 'pattern').toLowerCase().replace(/\s+/g, '-')}.wav`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        document.getElementById('flStatus').textContent = 'Música exportada em WAV.';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('flStatus').textContent = 'Não foi possível exportar a música.';
+      } finally {
+        button.disabled = false;
+        button.textContent = previousLabel;
+      }
+    }
+
+    function flAudioBufferToWav(buffer) {
+      const numChannels = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const format = 1;
+      const bitDepth = 16;
+      const samples = buffer.length;
+      const blockAlign = numChannels * bitDepth / 8;
+      const byteRate = sampleRate * blockAlign;
+      const dataSize = samples * blockAlign;
+      const arrayBuffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(arrayBuffer);
+      let offset = 0;
+      const writeString = str => { for (let i = 0; i < str.length; i++) view.setUint8(offset++, str.charCodeAt(i)); };
+      writeString('RIFF');
+      view.setUint32(offset, 36 + dataSize, true); offset += 4;
+      writeString('WAVE');
+      writeString('fmt ');
+      view.setUint32(offset, 16, true); offset += 4;
+      view.setUint16(offset, format, true); offset += 2;
+      view.setUint16(offset, numChannels, true); offset += 2;
+      view.setUint32(offset, sampleRate, true); offset += 4;
+      view.setUint32(offset, byteRate, true); offset += 4;
+      view.setUint16(offset, blockAlign, true); offset += 2;
+      view.setUint16(offset, bitDepth, true); offset += 2;
+      writeString('data');
+      view.setUint32(offset, dataSize, true); offset += 4;
+      const channels = Array.from({ length: numChannels }, (_, i) => buffer.getChannelData(i));
+      for (let i = 0; i < samples; i++) {
+        for (let channel = 0; channel < numChannels; channel++) {
+          let sample = Math.max(-1, Math.min(1, channels[channel][i] || 0));
+          view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+          offset += 2;
+        }
+      }
+      return arrayBuffer;
+    }
+
+    function setupFLStudio() {
+      loadFLState();
+      document.getElementById('flBpmInput').value = state.fl.bpm;
+      document.getElementById('flStepsSelect').value = String(state.fl.steps);
+      document.getElementById('flPlayMode').value = state.fl.playMode;
+      renderFLNoteLabels();
+      renderFLRuler();
+      renderFLPatterns();
+      renderFLInstrumentList();
+      renderFLGrid();
+      setFLView(state.fl.currentView || 'piano');
+      const grid = document.getElementById('flGrid');
+      const layer = document.getElementById('flNoteLayer');
+      const gridWrap = document.getElementById('flGridWrap');
+      const noteLabels = document.getElementById('flNoteLabels');
+      const ruler = document.getElementById('flRuler');
+      const playlistWrap = document.getElementById('flPlaylistWrap');
+      const clipLayer = document.getElementById('flClipLayer');
+      let ignoreLabelSync = false;
+
+      document.getElementById('flInstrumentPickerBtn').addEventListener('click', () => {
+        document.getElementById('flInstrumentPicker').classList.toggle('open');
+      });
+      document.getElementById('flToolbarInstrument').addEventListener('change', (e) => {
+        applyFLCurrentInstrument(e.target.value);
+      });
+
+      document.getElementById('flPlayBtn').addEventListener('click', () => {
+        const wasPlayingPattern = state.fl.playing && state.fl.playMode === 'pattern';
+        state.fl.playMode = 'pattern';
+        document.getElementById('flPlayMode').value = 'pattern';
+        if (wasPlayingPattern) {
+          stopFLPlayback(false);
+          return;
+        }
+        state.fl.currentStep = 0;
+        if (state.fl.playing) stopFLPlayback(true);
+        startFLPlayback();
+      });
+      document.getElementById('flSongPlayBtn').addEventListener('click', () => {
+        const wasPlayingSong = state.fl.playing && state.fl.playMode === 'song';
+        state.fl.playMode = 'song';
+        document.getElementById('flPlayMode').value = 'song';
+        if (wasPlayingSong) {
+          stopFLPlayback(false);
+          return;
+        }
+        state.fl.currentStep = 0;
+        if (state.fl.playing) stopFLPlayback(true);
+        startFLPlayback();
+      });
+      document.getElementById('flStopBtn').addEventListener('click', () => stopFLPlayback(true));
+      document.getElementById('flExportBtn').addEventListener('click', exportFLMusic);
+      document.getElementById('flClearPatternBtn').addEventListener('click', () => {
+        flCurrentPattern().notes = [];
+        saveFLState();
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = `${flCurrentPattern().name} limpo.`;
+      });
+
+      gridWrap.addEventListener('scroll', () => {
+        ruler.style.transform = `translateX(${-gridWrap.scrollLeft}px)`;
+        if (!ignoreLabelSync) noteLabels.scrollTop = gridWrap.scrollTop;
+      });
+      noteLabels.addEventListener('scroll', () => {
+        ignoreLabelSync = true;
+        gridWrap.scrollTop = noteLabels.scrollTop;
+        ignoreLabelSync = false;
+      });
+
+      grid.addEventListener('mousedown', (e) => {
+        const cell = e.target.closest('.fl-cell');
+        if (!cell) return;
+        const row = Number(cell.dataset.row);
+        const col = Number(cell.dataset.col);
+        if (flFindNoteAt(row, col)) return;
+        flCurrentPattern().notes.push(flCreateNote(row, col, 1, state.fl.currentInstrument));
+        saveFLState();
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = 'Nota criada.';
+      });
+
+      layer.addEventListener('click', (e) => {
+        const noteEl = e.target.closest('.fl-note-block');
+        if (!noteEl) return;
+        if (e.target.closest('.fl-note-resize')) return;
+        if (noteEl.dataset.moved === '1') {
+          noteEl.dataset.moved = '0';
+          return;
+        }
+        flRemoveNote(noteEl.dataset.noteId);
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = 'Nota apagada.';
+      });
+
+      layer.addEventListener('mousedown', (e) => {
+        const handle = e.target.closest('.fl-note-resize');
+        const noteEl = e.target.closest('.fl-note-block');
+        if (!noteEl) return;
+        const noteId = noteEl.dataset.noteId;
+        const note = flCurrentPattern().notes.find(item => item.id === noteId);
+        if (!note) return;
+        if (handle) {
+          e.preventDefault();
+          e.stopPropagation();
+          const startX = e.clientX;
+          const initialLength = note.length;
+          function onMove(ev) {
+            const diff = Math.round((ev.clientX - startX) / 34);
+            note.length = Math.max(1, Math.min(state.fl.steps - note.col, initialLength + diff));
+            renderFLGrid();
+          }
+          function onUp() {
+            saveFLState();
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            document.getElementById('flStatus').textContent = 'Tamanho da nota alterado.';
+          }
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const originCol = note.col;
+        const originRow = note.row;
+        let moved = false;
+        noteEl.classList.add('moving');
+        function onMove(ev) {
+          const diffCol = Math.round((ev.clientX - startX) / 34);
+          const diffRow = Math.round((ev.clientY - startY) / 24);
+          const nextCol = Math.max(0, Math.min(state.fl.steps - note.length, originCol + diffCol));
+          const nextRow = Math.max(0, Math.min(state.fl.rows - 1, originRow + diffRow));
+          if (nextCol === note.col && nextRow === note.row) return;
+          if (flFindNoteAt(nextRow, nextCol, note.id)) return;
+          note.col = nextCol;
+          note.row = nextRow;
+          moved = true;
+          renderFLGrid();
+        }
+        function onUp() {
+          if (moved) {
+            saveFLState();
+            document.getElementById('flStatus').textContent = 'Nota movida.';
+          }
+          const current = document.querySelector(`.fl-note-block[data-note-id="${note.id}"]`);
+          if (current) current.dataset.moved = moved ? '1' : '0';
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      playlistWrap.addEventListener('dragover', e => e.preventDefault());
+      playlistWrap.addEventListener('drop', e => {
+        e.preventDefault();
+        const { track, bar } = flGetPlaylistDropPosition(e);
+        if (state.fl.draggedPatternId) {
+          state.fl.playlist.push({ id: `clip-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`, patternId: state.fl.draggedPatternId, track, startBar: bar });
+          saveFLState();
+          renderFLPlaylist();
+          document.getElementById('flStatus').textContent = 'Pattern adicionada na playlist.';
+        } else if (state.fl.draggedClipId) {
+          const clip = state.fl.playlist.find(item => item.id === state.fl.draggedClipId);
+          if (clip) {
+            clip.track = track;
+            clip.startBar = bar;
+            saveFLState();
+            renderFLPlaylist();
+            document.getElementById('flStatus').textContent = 'Clip movido na playlist.';
+          }
+        }
+        state.fl.draggedPatternId = null;
+        state.fl.draggedClipId = null;
+      });
+
+      clipLayer.addEventListener('mousedown', (e) => {
+        const clipEl = e.target.closest('.fl-clip');
+        if (!clipEl) return;
+        const clip = state.fl.playlist.find(item => item.id === clipEl.dataset.clipId);
+        if (!clip) return;
+        const patternIndex = state.fl.patterns.findIndex(pattern => pattern.id === clip.patternId);
+        if (patternIndex >= 0) {
+          state.fl.currentPattern = patternIndex;
+          renderFLPatterns();
+          renderFLPatternPalette();
+          renderFLGrid();
+        }
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const originBar = clip.startBar;
+        const originTrack = clip.track;
+        let moved = false;
+        clipEl.classList.add('moving');
+        function onMove(ev) {
+          const diffBar = Math.round((ev.clientX - startX) / 68);
+          const diffTrack = Math.round((ev.clientY - startY) / 42);
+          const nextBar = Math.max(0, Math.min(state.fl.playlistBars - 1, originBar + diffBar));
+          const nextTrack = Math.max(0, Math.min(state.fl.playlistTracks - 1, originTrack + diffTrack));
+          if (nextBar === clip.startBar && nextTrack === clip.track) return;
+          clip.startBar = nextBar;
+          clip.track = nextTrack;
+          moved = true;
+          renderFLPlaylist();
+        }
+        function onUp() {
+          if (moved) {
+            saveFLState();
+            document.getElementById('flStatus').textContent = 'Clip movido na playlist.';
+          }
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      document.getElementById('flBpmInput').addEventListener('change', (e) => {
+        const next = Math.max(60, Math.min(220, Number(e.target.value) || 120));
+        state.fl.bpm = next;
+        e.target.value = next;
+        saveFLState();
+        document.getElementById('flStatus').textContent = `BPM alterado para ${next}.`;
+        if (state.fl.playing) startFLPlayback();
+      });
+
+      document.getElementById('flStepsSelect').addEventListener('change', (e) => {
+        state.fl.steps = Number(e.target.value);
+        state.fl.patterns.forEach(pattern => {
+          pattern.notes = pattern.notes.filter(n => n.col < state.fl.steps).map(note => ({ ...note, length: Math.max(1, Math.min(note.length, state.fl.steps - note.col)) }));
+        });
+        saveFLState();
+        renderFLRuler();
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = `Grade alterada para ${state.fl.steps} passos.`;
+        if (state.fl.playing) startFLPlayback();
+      });
+
+      document.getElementById('flPlayMode').addEventListener('change', (e) => {
+        state.fl.playMode = e.target.value;
+        state.fl.currentStep = 0;
+        saveFLState();
+        document.getElementById('flStatus').textContent = state.fl.playMode === 'song' ? 'Modo música ativado. A playlist inteira será tocada.' : 'Modo pattern ativado.';
+        if (state.fl.playing) startFLPlayback();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        const activeTag = document.activeElement?.tagName;
+        if (e.code !== 'Space') return;
+        if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+        const flWindow = document.getElementById('win-flstudio');
+        if (!flWindow.classList.contains('show')) return;
+        e.preventDefault();
+        toggleFLPlayback();
+      });
+    }
+
+
     function getSearchEntries() {
       const appEntries = [
         { label: 'Bloco de Notas', type: 'Aplicativo', action: () => openApp('notepad') },
@@ -1301,7 +2351,8 @@
         { label: 'Word', type: 'Aplicativo', action: () => openApp('word') },
         { label: 'Excel', type: 'Aplicativo', action: () => openApp('excel') },
         { label: 'PowerPoint', type: 'Aplicativo', action: () => openApp('powerpoint') },
-        { label: 'Lixeira', type: 'Aplicativo', action: () => openApp('recycle') }
+        { label: 'Lixeira', type: 'Aplicativo', action: () => openApp('recycle') },
+        { label: 'Criador de Música', type: 'Aplicativo', action: () => openApp('flstudio') }
       ];
       const fileEntries = Object.entries(folderData).flatMap(([folder, items]) => (items || []).map(item => ({
         label: item.name,
@@ -1545,6 +2596,7 @@
       if (app === 'fotos') renderPhotosApp();
       if (app === 'skype') renderSkype();
       if (app === 'videoeditor') resizeVideoEditorCanvas();
+      if (app === 'flstudio') renderFLGrid();
       updateTaskbarEntries();
     }
 
@@ -2035,11 +3087,12 @@
       setupSkype();
       setupSearch();
       setupVideoEditor();
+      setupFLStudio();
       await setupImports();
       initWallpaper();
       bootToLogin();
-      window.addEventListener('resize', () => { resizeCanvas(); resizeVideoEditorCanvas(); });
-      setTimeout(() => { resizeCanvas(); resizeVideoEditorCanvas(); }, 120);
+      window.addEventListener('resize', () => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); });
+      setTimeout(() => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); }, 120);
     })();
   </script>
 </body>
