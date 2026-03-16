@@ -341,7 +341,7 @@
     .flstudio-sidebar { background:linear-gradient(180deg,#222,#171717); border-right:1px solid rgba(255,255,255,.08); padding:12px; overflow:auto; }
     .fl-logo { font-size:20px; font-weight:700; color:#ff9f3d; margin-bottom:6px; }
     .fl-sub { font-size:12px; color:#bbb; margin-bottom:14px; }
-    .flstudio-main { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
+    .flstudio-main { position:relative; display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
     .fl-toolbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 12px; background:#1d1d1d; border-bottom:1px solid rgba(255,255,255,.08); }
     .fl-toolbar button, .fl-toolbar select, .fl-toolbar input { background:#2a2a2a; color:#fff; border:1px solid rgba(255,255,255,.12); padding:7px 10px; }
     .fl-toolbar button:hover { background:#333; }
@@ -398,8 +398,25 @@
     .fl-clip { position:absolute; height:34px; border-radius:8px; background:linear-gradient(180deg, rgba(255,159,61,.95), rgba(255,122,25,.92)); box-shadow:0 0 0 1px rgba(255,255,255,.16) inset, 0 6px 16px rgba(0,0,0,.24); color:#111; padding:6px 10px; font-size:12px; font-weight:700; cursor:grab; user-select:none; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     .fl-clip.active-drag { opacity:.55; }
     .fl-song-patterns { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .fl-instrument-sidebar-list { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+    .fl-toolbar-spacer { flex:1; }
+    .fl-timeline-nav { display:flex; gap:6px; }
     .fl-song-pattern-chip { padding:8px 10px; border:1px dashed rgba(255,255,255,.16); border-radius:8px; cursor:grab; background:#232323; color:#eee; }
     .fl-song-pattern-chip.active { outline:2px solid #ff9f3d; }
+
+    .fl-project-home { position:absolute; inset:0; background:linear-gradient(180deg,#171717,#0f0f0f); z-index:20; display:none; padding:24px; overflow:auto; }
+    .fl-project-home.open { display:block; }
+    .fl-project-title { font-size:28px; font-weight:700; color:#ff9f3d; margin-bottom:8px; }
+    .fl-project-sub { color:#c8c8c8; margin-bottom:18px; }
+    .fl-project-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .fl-project-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+    .fl-project-card { background:#1f1f1f; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; box-shadow:0 10px 24px rgba(0,0,0,.22); }
+    .fl-project-card h4 { margin:0 0 8px; font-size:18px; }
+    .fl-project-card p { margin:0 0 12px; color:#bbb; font-size:13px; }
+    .fl-project-card .row { display:flex; gap:8px; flex-wrap:wrap; }
+    .fl-project-empty { color:#bbb; border:1px dashed rgba(255,255,255,.14); border-radius:14px; padding:24px; text-align:center; }
+    .fl-project-chip { padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:#121212; color:#ddd; font-size:12px; }
+
     @media (max-width: 980px) {
       .flstudio-wrap, .flstudio-body, .fl-pianoroll-wrap { grid-template-columns:1fr; }
       .flstudio-body { grid-template-rows:minmax(0,1fr) auto; }
@@ -414,12 +431,62 @@
       .search-panel { width: calc(100% - 16px); left:8px; }
     }
 
+
+    .intro-splash {
+      position: absolute; inset: 0; background: #000; color: #fff; z-index: 12000;
+      display: grid; place-items: center; text-align: center; opacity: 1; transition: opacity 1.2s ease;
+      pointer-events: auto;
+    }
+    .intro-splash.fade { opacity: 0; }
+    .intro-splash.hidden { display: none; pointer-events: none; }
+    .intro-splash .intro-text { font-size: 34px; font-weight: 300; letter-spacing: .02em; padding: 20px; }
+    .volume-panel {
+      position:absolute; right:82px; bottom: calc(var(--taskbar-h) + 8px); width: 240px;
+      background: rgba(28,28,28,.96); color:#fff; border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(18px); box-shadow: var(--shadow); border-radius: 12px;
+      padding: 14px; display:none; z-index: 6900;
+    }
+    .volume-panel.open { display:block; }
+    .volume-panel input[type="range"] { width:100%; }
+    .tray-icon-btn { background:transparent; color:inherit; border:none; padding:0; cursor:pointer; font:inherit; }
+    .storage-card {
+      background:#fff; border:1px solid #dbe3ef; border-radius:14px; padding:16px; margin-top:14px;
+      box-shadow: 0 5px 12px rgba(0,0,0,.05);
+    }
+    .storage-meter {
+      height:12px; border-radius:999px; background:#e8edf5; overflow:hidden; margin:10px 0 8px;
+    }
+    .storage-meter > div { height:100%; background:linear-gradient(90deg,#0078d7,#28a4ff); width:0%; }
+    .danger-card {
+      background:#fff6f6; border:1px solid #f0c2c2; border-radius:14px; padding:16px; margin-top:16px;
+    }
+    .documents-layout { display:grid; grid-template-columns: 270px 1fr; height:100%; }
+    .documents-sidebar { border-right:1px solid #ddd; background:#f7f7f7; display:flex; flex-direction:column; }
+    .documents-toolbar { padding:10px; border-bottom:1px solid #ddd; display:flex; gap:8px; flex-wrap:wrap; background:#fbfbfb; }
+    .documents-list { padding:10px; overflow:auto; }
+    .document-item { padding:10px; border:1px solid #e1e1e1; border-radius:10px; background:#fff; margin-bottom:8px; cursor:pointer; }
+    .document-item:hover, .document-item.active { background:#eaf4ff; }
+    .documents-preview { padding:16px; overflow:auto; background:#fff; }
+    .documents-preview h3 { margin-top:0; }
+    .format-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.96); color:#fff; z-index:13000; display:none;
+      align-items:center; justify-content:center; text-align:center; padding:24px;
+    }
+    .format-overlay.show { display:flex; }
+    .format-box { width:min(520px, 92vw); }
+    .format-progress { height:14px; background:rgba(255,255,255,.12); border-radius:999px; overflow:hidden; margin-top:16px; }
+    .format-progress > div { height:100%; width:0%; background:#fff; }
+
   </style>
 </head>
 <body>
   <audio id="startupAudio" preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d1718ab835.mp3?filename=interface-start-110102.mp3" type="audio/mpeg">
   </audio>
+
+  <div id="introSplash" class="intro-splash">
+    <div class="intro-text">A Site powered by Shit Experiences.</div>
+  </div>
 
   <div id="bootScreen" class="screen active">
     <div class="windows-logo"><span></span></div>
@@ -461,7 +528,7 @@
         <div class="desktop-icon" data-app="fotos" data-label="Fotos"><div class="icon">🖼️</div><div class="label">Fotos</div></div>
         <div class="desktop-icon" data-app="videoeditor" data-label="Editor de Vídeo"><div class="icon">🎬</div><div class="label">Editor de Vídeo</div></div>
         <div class="desktop-icon" data-app="skype" data-label="Skype"><div class="icon">💬</div><div class="label">Skype</div></div>
-        <div class="desktop-icon" data-app="flstudio" data-label="Criador de Música"><div class="icon">🎹</div><div class="label">Criador de Música</div></div>
+        <div class="desktop-icon" data-app="flstudio" data-label="Kuatz Studio"><div class="icon">🎹</div><div class="label">Kuatz Studio</div></div>
       </div>
 
       <div id="selectionBox" class="selection-box"></div>
@@ -485,6 +552,7 @@
         <div class="start-item" data-open="paint">🎨 Paint</div>
         <div class="start-item" data-open="calculator">🧮 Calculadora</div>
         <div class="start-item" data-open="explorer">📁 Explorador de Arquivos</div>
+        <div class="start-item" data-open="documents">📄 Documentos</div>
         <div class="start-item" data-open="edge">🌐 Microsoft Edge</div>
         <div class="start-item" data-open="store">🛍️ Windows Store</div>
         <div class="start-item" data-open="settings">⚙️ Configurações</div>
@@ -495,7 +563,7 @@
         <div class="start-item" data-open="fotos">🖼️ Fotos</div>
         <div class="start-item" data-open="videoeditor">🎬 Editor de Vídeo</div>
         <div class="start-item" data-open="skype">💬 Skype</div>
-        <div class="start-item" data-open="flstudio">🎹 Criador de Música</div>
+        <div class="start-item" data-open="flstudio">🎹 Kuatz Studio</div>
       </div>
       <div class="start-tiles">
         <h3>Fixado</h3>
@@ -503,12 +571,13 @@
           <div class="tile" data-open="edge">Microsoft Edge</div>
           <div class="tile dark" data-open="store">Store</div>
           <div class="tile dark" data-open="explorer">Arquivos</div>
+          <div class="tile dark" data-open="documents">Documentos</div>
           <div class="tile" data-open="calculator">Calculadora</div>
           <div class="tile" data-open="paint">Paint</div>
           <div class="tile dark" data-open="fotos">Fotos</div>
           <div class="tile" data-open="videoeditor">Editor Vídeo</div>
           <div class="tile dark" data-open="skype">Skype</div>
-          <div class="tile" data-open="flstudio">Criador de Música</div>
+          <div class="tile" data-open="flstudio">Kuatz Studio</div>
           <div class="tile dark" data-open="settings">Configurações</div>
         </div>
       </div>
@@ -560,6 +629,26 @@
           <div class="side-item" data-folder="Lixeira">Lixeira</div>
         </div>
         <div class="folder-view"><h3 id="folderTitle">Documentos</h3><div id="folderGrid" class="folder-grid"></div></div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
+    <!-- Documents -->
+    <div class="window" id="win-documents" data-app="documents" data-title="Documentos" style="left:250px; top:100px; width:920px; height:560px;">
+      <div class="titlebar"><div class="title">Documentos</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body documents-layout">
+        <div class="documents-sidebar">
+          <div class="documents-toolbar">
+            <button id="createDocumentBtn">Novo documento</button>
+            <button id="renameDocumentBtn">Renomear</button>
+            <button id="deleteDocumentBtn">Excluir</button>
+          </div>
+          <div class="documents-list" id="documentsList"></div>
+        </div>
+        <div class="documents-preview" id="documentsPreview">
+          <h3>Nenhum documento selecionado</h3>
+          <p>Crie um documento e abra no Word para começar a escrever.</p>
+        </div>
       </div>
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
     </div>
@@ -626,6 +715,22 @@
             <p>Som de inicialização: <button id="playStartupBtn">Reproduzir</button></p>
             <p>Centro de Ações: <button id="openActionCenterBtn">Abrir</button></p>
             <p>Energia: use o menu de energia do Iniciar para Suspender, Reiniciar e Desligar.</p>
+            <div class="storage-card">
+              <h3 style="margin:0 0 8px;">Volume do Windows</h3>
+              <input id="systemVolumeSliderSettings" type="range" min="0" max="100" value="100" />
+              <div id="systemVolumeLabelSettings" style="margin-top:8px; color:#555; font-size:13px;">100%</div>
+            </div>
+            <div class="storage-card">
+              <h3 style="margin:0 0 8px;">Armazenamento</h3>
+              <div id="storageSummary">32 GB usados de 512 GB</div>
+              <div class="storage-meter"><div id="storageMeterBar"></div></div>
+              <div id="storageDetails" style="color:#555; font-size:13px;">Arquivos importados e projetos salvos consomem espaço.</div>
+            </div>
+            <div class="danger-card">
+              <h3 style="margin:0 0 8px;">Formatar computador</h3>
+              <p style="margin:0 0 12px;">Exclui todo o save do player, limpa projetos, mídias, documentos e reinicia tudo depois de cerca de 2 minutos.</p>
+              <button id="formatComputerBtn">Formatar computador</button>
+            </div>
           </div>
           <div class="settings-section" data-section="about">
             <h2>Sobre este PC</h2>
@@ -668,7 +773,25 @@
     <div class="window" id="win-word" data-app="word" data-title="Word" style="left:170px; top:80px; width:880px; height:560px;">
       <div class="titlebar"><div class="title">Word</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
       <div class="window-body office-surface">
-        <div class="office-ribbon"><button data-format="bold">Negrito</button><button data-format="italic">Itálico</button><button data-format="underline">Sublinhado</button><button id="saveWordBtn">Salvar</button></div>
+        <div class="office-ribbon">
+          <button id="newWordDocBtn">Novo</button>
+          <button data-format="bold">Negrito</button>
+          <button data-format="italic">Itálico</button>
+          <button data-format="underline">Sublinhado</button>
+          <button data-format="insertUnorderedList">Lista</button>
+          <button data-align="justifyLeft">Esq.</button>
+          <button data-align="justifyCenter">Centro</button>
+          <button data-align="justifyRight">Dir.</button>
+          <select id="wordFontSizeSelect">
+            <option value="3">12</option>
+            <option value="4" selected>14</option>
+            <option value="5">18</option>
+            <option value="6">24</option>
+            <option value="7">32</option>
+          </select>
+          <input id="wordColorInput" type="color" value="#111111" title="Cor do texto" />
+          <button id="saveWordBtn">Salvar</button>
+        </div>
         <div class="office-editor" id="wordEditor" contenteditable="true"><h2>Documento sem título</h2><p>Escreva aqui...</p></div>
       </div>
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
@@ -785,36 +908,42 @@
 
 
     <!-- Criador de Música -->
-    <div class="window" id="win-flstudio" data-app="flstudio" data-title="Criador de Música" style="left:160px; top:70px; width:1140px; height:700px;">
-      <div class="titlebar"><div class="title">Criador de Música</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+    <div class="window" id="win-flstudio" data-app="flstudio" data-title="Kuatz Studio" style="left:160px; top:70px; width:1140px; height:700px;">
+      <div class="titlebar"><div class="title">Kuatz Studio</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
       <div class="window-body flstudio-wrap">
         <div class="flstudio-sidebar">
-          <div class="fl-logo">Criador de Música</div>
+          <div class="fl-logo">Kuatz Studio</div>
           <div class="fl-sub">HTML Groove Machine</div>
-          <div class="fl-mini">Agora com piano roll rolável, patterns infinitas, playlist livre e exportação em WAV.</div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#ff9f3d"></span><span>Piano</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#7bdff2"></span><span>Bass</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#b388ff"></span><span>Lead</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#98f5a5"></span><span>Guitar</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#f6bd60"></span><span>Pad</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#84dcc6"></span><span>Pluck</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#a0e548"></span><span>Kick</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#ff6b6b"></span><span>Snare</span></div>
-          <div class="fl-legend"><span class="fl-dot" style="background:#ffd166"></span><span>Hi-Hat</span></div>
+          <div class="fl-mini">Agora com piano roll rolável, patterns infinitas, playlist livre, prévia das notas e exportação em WAV.</div>
+          <div class="fl-mini"><strong>Todos os instrumentos</strong></div>
+          <div class="fl-instrument-sidebar-list" id="flInstrumentSidebarList"></div>
           <div class="fl-song-patterns" id="flSongPatternPalette"></div>
         </div>
         <div class="flstudio-main">
+          <div class="fl-project-home open" id="flProjectHome">
+            <div class="fl-project-title">Kuatz Studio</div>
+            <div class="fl-project-sub">Escolha um projeto salvo ou crie um novo. O studio não abre sozinho mais.</div>
+            <div class="fl-project-actions">
+              <button id="flNewProjectBtn">＋ Novo projeto</button>
+              <button id="flRefreshProjectsBtn">↻ Atualizar lista</button>
+            </div>
+            <div class="fl-project-grid" id="flProjectList"></div>
+          </div>
           <div class="fl-toolbar">
+            <button id="flProjectsBtn">📁 Projetos</button>
+            <span class="fl-project-chip" id="flProjectName">Nenhum projeto aberto</span>
             <button id="flPlayBtn">▶ Play</button>
             <button id="flSongPlayBtn">🎼 Tocar playlist</button>
             <button id="flStopBtn">■ Stop</button>
             <button id="flClearPatternBtn">Limpar pattern</button>
             <button id="flExportBtn">Exportar música</button>
+            <div class="fl-timeline-nav"><button id="flTimelineLeftBtn">◀ Timeline</button><button id="flTimelineRightBtn">Timeline ▶</button></div>
             <label class="fl-toolbar-field">Instrumento <select id="flToolbarInstrument"></select></label>
             <label>BPM <input id="flBpmInput" type="number" min="60" max="220" value="120" style="width:74px"></label>
             <label>Passos <select id="flStepsSelect"><option value="16">16</option><option value="24">24</option><option value="32" selected>32</option><option value="48">48</option><option value="64">64</option></select></label>
+            <div class="fl-timeline-nav"><button id="flOctaveUpBtn">Teclas ▲</button><button id="flOctaveDownBtn">Teclas ▼</button></div>
             <label>Modo <select id="flPlayMode"><option value="pattern">Pattern</option><option value="song">Song</option></select></label>
-            <div class="fl-status" id="flStatus">Pattern 1 pronto.</div>
+            <div class="fl-status" id="flStatus">Escolha um projeto para começar.</div>
           </div>
           <div class="fl-patterns" id="flPatterns"></div>
           <div class="flstudio-body">
@@ -875,6 +1004,12 @@
       </div>
     </div>
 
+    <div id="volumePanel" class="volume-panel">
+      <div style="font-size:13px; color:#cfcfcf; margin-bottom:8px;">Volume do Windows</div>
+      <input id="systemVolumeSlider" type="range" min="0" max="100" value="100" />
+      <div id="systemVolumeLabel" style="margin-top:8px; font-size:12px; color:#bdbdbd;">100%</div>
+    </div>
+
     <div class="taskbar">
       <div class="tb-left">
         <button class="tb-btn" id="startButton" title="Iniciar"><div class="start-logo"><span></span></div></button>
@@ -882,15 +1017,17 @@
         <button class="task-app" data-open="edge" id="task-edge" title="Edge">🌐</button>
         <button class="task-app" data-open="explorer" id="task-explorer" title="Explorador">📁</button>
         <button class="task-app" data-open="store" id="task-store" title="Store">🛍️</button>
-        <button class="task-app" data-open="flstudio" id="task-flstudio" title="Criador de Música">🎹</button>
+        <button class="task-app" data-open="flstudio" id="task-flstudio" title="Kuatz Studio">🎹</button>
         <div id="taskbarWindows"></div>
       </div>
       <div class="tb-right">
-        <div class="tray-icons">📶 🔊 🔋</div>
+        <div class="tray-icons">📶 <button class="tray-icon-btn" id="volumeTrayBtn" title="Volume">🔊</button> 🔋</div>
         <div class="clock-wrap" id="actionCenterToggle"><div id="taskTime">00:00</div><div id="taskDate">01/01/2026</div></div>
       </div>
     </div>
   </div>
+
+  <div id="formatOverlay" class="format-overlay"><div class="format-box"><h2>Formatando o computador</h2><p id="formatStatusText">Preparando a exclusão completa dos dados...</p><div class="format-progress"><div id="formatProgressBar"></div></div><div id="formatCountdownText" style="margin-top:12px; color:#ddd; font-size:13px;">2:00 restantes</div></div></div>
 
   <input id="mediaFileInput" type="file" accept=".jpg,.jpeg,.png,.mp3,.mp4,image/png,image/jpeg,audio/mpeg,video/mp4" multiple class="hidden">
   <input id="wallpaperFileInput" type="file" accept=".jpg,.jpeg,.png,image/png,image/jpeg" class="hidden">
@@ -923,6 +1060,12 @@
       videoEditorFileName: 'video-editado.webm',
       audioContext: null,
       fl: null,
+      flProjects: null,
+      documents: [],
+      currentDocumentId: null,
+      systemVolume: Number(localStorage.getItem('win10_system_volume') || '70'),
+      masterGain: null,
+      formatInterval: null,
     };
 
     const bootMessages = ['Preparando o Windows', 'Configurando dispositivos', 'Instalando recursos', 'Quase pronto'];
@@ -930,6 +1073,8 @@
     const DB_VERSION = 1;
     const STORE_MEDIA = 'mediaFiles';
     const STORE_WALLPAPERS = 'wallpapers';
+    const STORAGE_LIMIT_BYTES = 512 * 1024 * 1024 * 1024;
+    const STORAGE_BASE_BYTES = 32 * 1024 * 1024 * 1024;
     const wallpapers = [
       'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
@@ -1055,11 +1200,210 @@
         });
         savedWalls.forEach(item => {
           const src = createObjectURL(item.blob);
-          state.customWallpapers.push({ id: item.id, url: src, name: item.name || 'Wallpaper personalizado', imported: true });
+          state.customWallpapers.push({ id: item.id, url: src, name: item.name || 'Wallpaper personalizado', imported: true, size: item.blob?.size || item.size || 0 });
         });
       } catch (err) {
         console.error('Erro ao carregar arquivos salvos', err);
       }
+    }
+
+
+    function estimateTextBytes(text) {
+      return new Blob([String(text || '')]).size;
+    }
+
+    function getSavedDocuments() {
+      try {
+        const docs = JSON.parse(localStorage.getItem('win10_documents') || '[]');
+        return Array.isArray(docs) ? docs : [];
+      } catch (err) {
+        console.error('Erro ao ler documentos salvos', err);
+        return [];
+      }
+    }
+
+    function persistDocuments() {
+      localStorage.setItem('win10_documents', JSON.stringify(state.documents || []));
+      syncDocumentsFolder();
+      updateStorageUI();
+      renderDocumentsApp(state.currentDocumentId);
+    }
+
+    function syncDocumentsFolder() {
+      folderData['Documentos'] = folderData['Documentos'].filter(item => !item.appDocId);
+      (state.documents || []).forEach(doc => {
+        folderData['Documentos'].push({
+          name: doc.name,
+          type: 'doc',
+          appDocId: doc.id,
+          size: estimateTextBytes(doc.content),
+        });
+      });
+    }
+
+    function getUsedStorageBytes() {
+      let total = STORAGE_BASE_BYTES;
+      total += (state.importedMedia || []).reduce((sum, item) => sum + Number(item.size || 0), 0);
+      total += (state.customWallpapers || []).reduce((sum, item) => sum + Number(item.size || 0), 0);
+      total += (state.documents || []).reduce((sum, doc) => sum + estimateTextBytes(doc.content), 0);
+      total += estimateTextBytes(localStorage.getItem('win10_kuatz_projects'));
+      total += estimateTextBytes(localStorage.getItem('win10_word'));
+      return total;
+    }
+
+    function canAllocateBytes(extraBytes) {
+      return getUsedStorageBytes() + Number(extraBytes || 0) <= STORAGE_LIMIT_BYTES;
+    }
+
+    function updateStorageUI() {
+      const used = getUsedStorageBytes();
+      const usedGB = (used / (1024 ** 3)).toFixed(2);
+      const maxGB = (STORAGE_LIMIT_BYTES / (1024 ** 3)).toFixed(0);
+      const pct = Math.min(100, (used / STORAGE_LIMIT_BYTES) * 100);
+      const summary = document.getElementById('storageSummary');
+      const details = document.getElementById('storageDetails');
+      const bar = document.getElementById('storageMeterBar');
+      if (summary) summary.textContent = `${usedGB} GB usados de ${maxGB} GB`;
+      if (details) {
+        const freeGB = Math.max(0, (STORAGE_LIMIT_BYTES - used) / (1024 ** 3)).toFixed(2);
+        details.textContent = `${freeGB} GB livres. Base do sistema: 32 GB.`;
+      }
+      if (bar) bar.style.width = `${pct}%`;
+    }
+
+    function setSystemVolume(value, silent = false) {
+      const next = Math.max(0, Math.min(100, Number(value || 0)));
+      state.systemVolume = next;
+      localStorage.setItem('win10_system_volume', String(next));
+      const fraction = next / 100;
+      if (state.masterGain && state.audioContext) {
+        try { state.masterGain.gain.setValueAtTime(fraction, state.audioContext.currentTime); } catch (_) {}
+      }
+      document.querySelectorAll('audio, video').forEach(el => {
+        if (el.id !== 'videoEditorCanvas') el.volume = fraction;
+      });
+      const label = `${next}%`;
+      const a = document.getElementById('systemVolumeSlider');
+      const b = document.getElementById('systemVolumeSliderSettings');
+      const c = document.getElementById('systemVolumeLabel');
+      const d = document.getElementById('systemVolumeLabelSettings');
+      if (a) a.value = String(next);
+      if (b) b.value = String(next);
+      if (c) c.textContent = label;
+      if (d) d.textContent = label;
+      if (!silent) showToast(`Volume ajustado para ${label}.`);
+    }
+
+    function renderDocumentsApp(selectId = null) {
+      const list = document.getElementById('documentsList');
+      const preview = document.getElementById('documentsPreview');
+      if (!list || !preview) return;
+      list.innerHTML = '';
+      if (!(state.documents || []).length) {
+        preview.innerHTML = '<h3>Nenhum documento</h3><p>Clique em <strong>Novo documento</strong> para criar um arquivo.</p>';
+        return;
+      }
+      const targetId = selectId || state.currentDocumentId || state.documents[0].id;
+      const selected = state.documents.find(doc => doc.id === targetId) || state.documents[0];
+      state.currentDocumentId = selected.id;
+      state.documents.forEach(doc => {
+        const item = document.createElement('div');
+        item.className = 'document-item' + (doc.id === selected.id ? ' active' : '');
+        item.innerHTML = `<strong>${doc.name}</strong><div style="font-size:12px;color:#666;margin-top:4px;">${formatBytes(estimateTextBytes(doc.content))}</div>`;
+        item.addEventListener('click', () => renderDocumentsApp(doc.id));
+        item.addEventListener('dblclick', () => openWordDocument(doc.id));
+        list.appendChild(item);
+      });
+      const size = formatBytes(estimateTextBytes(selected.content));
+      preview.innerHTML = `<h3>${selected.name}</h3><p>Tamanho: ${size}</p><div style="white-space:pre-wrap;color:#444;border:1px solid #eee;border-radius:10px;padding:12px;min-height:140px;background:#fafafa;">${selected.content ? selected.content.replace(/<[^>]+>/g,'').slice(0, 1200) : 'Documento vazio.'}</div><div style="margin-top:12px;"><button id="openSelectedDocumentBtn">Abrir no Word</button></div>`;
+      const openBtn = document.getElementById('openSelectedDocumentBtn');
+      if (openBtn) openBtn.addEventListener('click', () => openWordDocument(selected.id));
+    }
+
+    function createDocument() {
+      const baseName = `Documento ${((state.documents || []).length) + 1}`;
+      const name = (prompt('Nome do documento:', baseName) || '').trim();
+      if (!name) return;
+      const defaultContent = `<h2>${name}</h2><p>Escreva aqui...</p>`;
+      if (!canAllocateBytes(estimateTextBytes(defaultContent))) {
+        showToast('Armazenamento cheio. Não foi possível criar o documento.');
+        return;
+      }
+      const doc = { id: `doc-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`, name, content: defaultContent, updatedAt: Date.now() };
+      state.documents.push(doc);
+      state.currentDocumentId = doc.id;
+      persistDocuments();
+      openWordDocument(doc.id);
+      showToast('Documento criado.');
+    }
+
+    function renameCurrentDocument() {
+      const doc = (state.documents || []).find(item => item.id === state.currentDocumentId);
+      if (!doc) return showToast('Selecione um documento.');
+      const nextName = (prompt('Novo nome do documento:', doc.name) || '').trim();
+      if (!nextName) return;
+      doc.name = nextName;
+      doc.updatedAt = Date.now();
+      persistDocuments();
+      showToast('Documento renomeado.');
+    }
+
+    function deleteCurrentDocument() {
+      const doc = (state.documents || []).find(item => item.id === state.currentDocumentId);
+      if (!doc) return showToast('Selecione um documento.');
+      if (!confirm(`Excluir "${doc.name}"?`)) return;
+      state.documents = state.documents.filter(item => item.id !== doc.id);
+      state.currentDocumentId = state.documents[0]?.id || null;
+      persistDocuments();
+      showToast('Documento excluído.');
+    }
+
+    function openWordDocument(docId) {
+      const doc = (state.documents || []).find(item => item.id === docId);
+      if (!doc) return;
+      state.currentDocumentId = doc.id;
+      const wordEditor = document.getElementById('wordEditor');
+      if (wordEditor) wordEditor.innerHTML = doc.content || `<h2>${doc.name}</h2><p>Escreva aqui...</p>`;
+      openApp('word');
+      renderDocumentsApp(doc.id);
+    }
+
+    async function resetIndexedDBStores() {
+      try { await clearStore(STORE_MEDIA); } catch (_) {}
+      try { await clearStore(STORE_WALLPAPERS); } catch (_) {}
+    }
+
+    function startFormatComputer() {
+      if (!confirm('Tem certeza? Isso vai apagar TODO O SAVE do player e reiniciar o computador.')) return;
+      stopFLPlayback?.(true);
+      const overlay = document.getElementById('formatOverlay');
+      const status = document.getElementById('formatStatusText');
+      const countdown = document.getElementById('formatCountdownText');
+      const bar = document.getElementById('formatProgressBar');
+      overlay.classList.add('show');
+      let remaining = 120;
+      clearInterval(state.formatInterval);
+      const tick = async () => {
+        const min = String(Math.floor(remaining / 60));
+        const sec = String(remaining % 60).padStart(2, '0');
+        countdown.textContent = `${min}:${sec} restantes`;
+        bar.style.width = `${((120 - remaining) / 120) * 100}%`;
+        if (remaining <= 0) {
+          clearInterval(state.formatInterval);
+          status.textContent = 'Finalizando a formatação...';
+          try {
+            await resetIndexedDBStores();
+          } catch (_) {}
+          localStorage.clear();
+          setTimeout(() => location.reload(), 900);
+          return;
+        }
+        if (remaining === 110) status.textContent = 'Excluindo projetos, documentos e arquivos importados...';
+        if (remaining === 45) status.textContent = 'Limpando preferências do sistema...';
+        remaining -= 1;
+      };
+      tick();
+      state.formatInterval = setInterval(tick, 1000);
     }
 
     const loginPanel = document.getElementById('loginPanel');
@@ -1086,6 +1430,20 @@
       screens[name].classList.add('active');
     }
 
+    function forceBootToLoginSafe() {
+      const boot = document.getElementById('bootScreen');
+      const login = document.getElementById('loginScreen');
+      if (!boot || !login) return;
+      if (!login.classList.contains('active') && !screens.desktop.classList.contains('active')) {
+        boot.classList.remove('active');
+        login.classList.add('active');
+      }
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(forceBootToLoginSafe, 4500);
+    });
+
     function startBootSequence() {
       showScreen('boot');
       let idx = 0;
@@ -1098,6 +1456,18 @@
         clearInterval(bootInterval);
         showScreen('login');
       }, 6200);
+    }
+
+    function playIntroSplashThenBoot() {
+      const splash = document.getElementById('introSplash');
+      if (!splash) return startBootSequence();
+      splash.classList.remove('hidden');
+      splash.classList.remove('fade');
+      setTimeout(() => splash.classList.add('fade'), 2300);
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        startBootSequence();
+      }, 3500);
     }
 
     function updateClocks() {
@@ -1266,6 +1636,8 @@
       else viewer.innerHTML = `<div>${item.name}</div>`;
       const setBtn = document.getElementById('setViewerWallpaperBtn');
       if (setBtn) setBtn.addEventListener('click', () => applyWallpaper(item.src));
+      const mediaEl = viewer.querySelector('audio, video');
+      if (mediaEl) mediaEl.volume = (state.systemVolume || 70) / 100;
     }
 
 
@@ -1274,6 +1646,11 @@
       const valid = files.filter(file => inferMediaType(file));
       if (!valid.length) {
         showToast('Selecione arquivos JPG, PNG, MP3 ou MP4.');
+        return;
+      }
+      const totalIncoming = valid.reduce((sum, file) => sum + Number(file.size || 0), 0);
+      if (!canAllocateBytes(totalIncoming)) {
+        showToast('Armazenamento cheio. Apague arquivos ou formate o computador.');
         return;
       }
       for (const file of valid) {
@@ -1292,6 +1669,7 @@
       if (getWindow('fotos') && getWindow('fotos').classList.contains('show')) renderPhotosApp();
       showToast('Arquivos importados com sucesso.');
       addNotification('Novos arquivos locais foram adicionados à biblioteca de mídia.');
+      updateStorageUI();
     }
 
     async function addCustomWallpaperFile(file) {
@@ -1299,13 +1677,18 @@
         showToast('Escolha uma imagem JPG ou PNG.');
         return;
       }
+      if (!canAllocateBytes(file.size || 0)) {
+        showToast('Armazenamento cheio. Não foi possível importar o wallpaper.');
+        return;
+      }
       const record = { id: `wall_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`, name: file.name, blob: file, size: file.size };
       await putInStore(STORE_WALLPAPERS, record);
       const url = createObjectURL(file);
-      state.customWallpapers.push({ id: record.id, url, name: file.name, imported: true });
+      state.customWallpapers.push({ id: record.id, url, name: file.name, imported: true, size: file.size || 0 });
       renderWallpaperGrid();
       applyWallpaper(url);
       showToast('Wallpaper personalizado adicionado.');
+      updateStorageUI();
     }
 
     async function clearImportedMedia() {
@@ -1318,12 +1701,14 @@
       renderMediaList();
       if (getWindow('explorer').classList.contains('show')) renderFolder(state.explorerFolder);
       showToast('Arquivos importados removidos.');
+      updateStorageUI();
     }
 
     async function setupImports() {
       await loadPersistedAssets();
       renderWallpaperGrid();
       renderMediaList();
+      updateStorageUI();
       const mediaInput = document.getElementById('mediaFileInput');
       const wallpaperInput = document.getElementById('wallpaperFileInput');
       const videoEditorInput = document.getElementById('videoEditorFileInput');
@@ -1445,7 +1830,8 @@
       return {
         bpm: 120,
         steps: 32,
-        rows: 36,
+        rows: 48,
+        highestMidi: 84,
         currentPattern: 0,
         currentInstrument: 'piano',
         currentView: 'piano',
@@ -1453,20 +1839,28 @@
         playing: false,
         currentStep: 0,
         timer: null,
-        playlistBars: 64,
+        playlistBars: 128,
         playlistTracks: 8,
         draggedPatternId: null,
         draggedClipId: null,
         instruments: [
           { id: 'piano', name: 'Piano', color: '#ff9f3d', kind: 'tone', wave: 'triangle' },
-          { id: 'bass', name: 'Bass', color: '#7bdff2', kind: 'tone', wave: 'sawtooth' },
-          { id: 'lead', name: 'Lead', color: '#b388ff', kind: 'tone', wave: 'square' },
-          { id: 'guitar', name: 'Guitar', color: '#98f5a5', kind: 'tone', wave: 'triangle', detune: 6 },
-          { id: 'pad', name: 'Pad', color: '#f6bd60', kind: 'tone', wave: 'sine', detune: -4 },
-          { id: 'pluck', name: 'Pluck', color: '#84dcc6', kind: 'tone', wave: 'square', detune: 0 },
-          { id: 'kick', name: 'Kick', color: '#a0e548', kind: 'drum' },
-          { id: 'snare', name: 'Snare', color: '#ff6b6b', kind: 'drum' },
-          { id: 'hat', name: 'Hi-Hat', color: '#ffd166', kind: 'drum' }
+          { id: 'guitar', name: 'Guitar', color: '#98f5a5', kind: 'tone', wave: 'triangle', detune: 6, filter: 2200 },
+          { id: 'bass', name: 'Bass', color: '#7bdff2', kind: 'tone', wave: 'sawtooth', filter: 820 },
+          { id: 'subbass', name: 'Sub Bass', color: '#59c3c3', kind: 'tone', wave: 'sine', octaveShift: -1, filter: 540 },
+          { id: 'lead', name: 'Lead', color: '#b388ff', kind: 'tone', wave: 'square', filter: 2800 },
+          { id: 'pad', name: 'Pad', color: '#f6bd60', kind: 'tone', wave: 'sine', detune: -4, filter: 1500 },
+          { id: 'pluck', name: 'Pluck', color: '#84dcc6', kind: 'tone', wave: 'square', filter: 2400 },
+          { id: 'bell', name: 'Bell', color: '#ffd6a5', kind: 'tone', wave: 'sine', bell: true, filter: 3200 },
+          { id: 'rave', name: 'Rave Stab', color: '#ff70a6', kind: 'tone', wave: 'sawtooth', detune: 12, filter: 2000 },
+          { id: 'kick', name: 'Kick', color: '#a0e548', kind: 'drum', drumType: 'kick' },
+          { id: 'snare', name: 'Snare', color: '#ff6b6b', kind: 'drum', drumType: 'snare' },
+          { id: 'hat', name: 'Hi-Hat', color: '#ffd166', kind: 'drum', drumType: 'hat' },
+          { id: 'clap', name: 'Clap', color: '#f28482', kind: 'drum', drumType: 'clap' },
+          { id: 'amen', name: 'Breakcore Amen', color: '#9d4edd', kind: 'drum', drumType: 'amen' },
+          { id: 'gabber', name: 'Gabber Kick', color: '#ef476f', kind: 'drum', drumType: 'gabber' },
+          { id: 'jungle', name: 'Jungle Snare', color: '#06d6a0', kind: 'drum', drumType: 'jungle' },
+          { id: 'glitchhat', name: 'Glitch Hat', color: '#ffe66d', kind: 'drum', drumType: 'glitchhat' }
         ],
         patterns: [{ id: 'pattern-1', name: 'Pattern 1', notes: [] }],
         playlist: []
@@ -1487,45 +1881,116 @@
       };
     }
 
-    function loadFLState() {
-      try {
-        const saved = JSON.parse(localStorage.getItem('win10_flstudio') || 'null');
-        if (saved && Array.isArray(saved.patterns) && Array.isArray(saved.instruments)) {
-          const base = getFLDefaultState();
-          state.fl = {
-            ...base,
-            ...saved,
-            rows: Math.max(24, Number(saved.rows || base.rows)),
-            currentView: saved.currentView || 'piano',
-            playMode: saved.playMode || 'pattern',
-            playing: false,
-            currentStep: 0,
-            timer: null,
-            draggedPatternId: null,
-            draggedClipId: null,
-            patterns: saved.patterns.map(normalizeFLPattern),
-            playlist: (saved.playlist || []).map((clip, index) => ({
-              id: clip.id || `clip-${index}-${Math.random().toString(16).slice(2, 8)}`,
-              patternId: clip.patternId || (saved.patterns[0]?.id || 'pattern-1'),
-              track: Math.max(0, Math.min((saved.playlistTracks || base.playlistTracks) - 1, Number(clip.track || 0))),
-              startBar: Math.max(0, Number(clip.startBar || 0))
-            }))
+    function mergeFLInstruments(savedInstruments = [], defaultInstruments = []) {
+      const merged = [...defaultInstruments.map(inst => ({ ...inst }))];
+      savedInstruments.forEach(savedInst => {
+        if (!savedInst || !savedInst.id) return;
+        const index = merged.findIndex(inst => inst.id === savedInst.id);
+        if (index >= 0) {
+          merged[index] = { ...merged[index], ...savedInst };
+        } else {
+          merged.push({ ...savedInst });
+        }
+      });
+      return merged;
+    }
+
+
+    function flNormalizeInstrumentRef(ref) {
+      return String(ref || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '');
+    }
+
+    function flFindInstrumentByRef(ref, instruments = (state.fl?.instruments || [])) {
+      if (!instruments.length) return null;
+      const normalized = flNormalizeInstrumentRef(ref);
+      const aliases = {
+        hihat: 'hat',
+        hihat: 'hat',
+        hihatclosed: 'hat',
+        breakcoreamen: 'amen',
+        amenbreak: 'amen',
+        amebreak: 'amen',
+        gabberkick: 'gabber',
+        junglesnare: 'jungle',
+        glitchhat: 'glitchhat',
+        subbass: 'subbass',
+        ravestab: 'rave'
+      };
+      const target = aliases[normalized] || normalized;
+      return instruments.find(inst => inst.id === ref)
+        || instruments.find(inst => flNormalizeInstrumentRef(inst.id) == target)
+        || instruments.find(inst => flNormalizeInstrumentRef(inst.name) == target)
+        || instruments[0]
+        || null;
+    }
+
+    function flRepairPatternInstruments(patterns, instruments) {
+      return (patterns || []).map((pattern, index) => ({
+        ...normalizeFLPattern(pattern, index),
+        notes: (pattern.notes || []).map((note, noteIndex) => {
+          const normalized = normalizeFLPattern({ notes: [note] }, index).notes[0] || note;
+          const inst = flFindInstrumentByRef(note.instrument, instruments) || instruments[0];
+          return {
+            ...normalized,
+            id: note.id || normalized.id || `note-${Date.now()}-${index}-${noteIndex}`,
+            instrument: inst ? inst.id : 'piano'
           };
-          if (!state.fl.patterns.length) state.fl.patterns = base.patterns;
-          return;
+        })
+      }));
+    }
+
+    function cloneFLProjectData(data) {
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function getFLProjectsStorage() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('win10_kuatz_projects') || 'null');
+        if (stored && Array.isArray(stored.projects)) return stored;
+      } catch (err) {
+        console.error('Erro ao ler projetos do Kuatz Studio', err);
+      }
+      try {
+        const legacy = JSON.parse(localStorage.getItem('win10_kuatz_studio') || localStorage.getItem('win10_flstudio') || 'null');
+        if (legacy && Array.isArray(legacy.patterns)) {
+          return {
+            currentProjectId: 'project-1',
+            projects: [{
+              id: 'project-1',
+              name: 'Projeto 1',
+              updatedAt: Date.now(),
+              data: cloneFLProjectData(legacy)
+            }]
+          };
         }
       } catch (err) {
-        console.error('Erro ao carregar Criador de Música', err);
+        console.error('Erro ao migrar projeto legado do Kuatz Studio', err);
       }
-      state.fl = getFLDefaultState();
+      return { currentProjectId: null, projects: [] };
+    }
+
+    function persistFLProjects() {
+      localStorage.setItem('win10_kuatz_projects', JSON.stringify(state.flProjects));
+    }
+
+    function loadFLProjects() {
+      state.flProjects = getFLProjectsStorage();
+      if (!state.flProjects || !Array.isArray(state.flProjects.projects)) {
+        state.flProjects = { currentProjectId: null, projects: [] };
+      }
     }
 
     function saveFLState() {
-      if (!state.fl) return;
+      if (!state.fl || !state.flProjects.currentProjectId) return;
       const snapshot = {
         bpm: state.fl.bpm,
         steps: state.fl.steps,
         rows: state.fl.rows,
+        highestMidi: state.fl.highestMidi,
         currentPattern: state.fl.currentPattern,
         currentInstrument: state.fl.currentInstrument,
         currentView: state.fl.currentView,
@@ -1536,29 +2001,172 @@
         patterns: state.fl.patterns,
         playlist: state.fl.playlist
       };
-      localStorage.setItem('win10_flstudio', JSON.stringify(snapshot));
+      const project = state.flProjects.projects.find(item => item.id === state.flProjects.currentProjectId);
+      if (!project) return;
+      project.data = cloneFLProjectData(snapshot);
+      project.updatedAt = Date.now();
+      state.flProjects.currentProjectId = project.id;
+      persistFLProjects();
     }
 
+    function loadFLState(projectId = null) {
+      const base = getFLDefaultState();
+      const targetId = projectId || state.flProjects.currentProjectId;
+      const project = state.flProjects.projects.find(item => item.id === targetId);
+      if (!project || !project.data || !Array.isArray(project.data.patterns)) {
+        state.fl = base;
+        return false;
+      }
+      const saved = project.data;
+      const mergedInstruments = mergeFLInstruments(Array.isArray(saved.instruments) ? saved.instruments : [], base.instruments);
+      state.fl = {
+        ...base,
+        ...saved,
+        instruments: mergedInstruments,
+        rows: Math.max(24, Number(saved.rows || base.rows)),
+        highestMidi: Math.max(36, Math.min(108, Number(saved.highestMidi || base.highestMidi || 84))),
+        currentView: saved.currentView || 'piano',
+        playMode: saved.playMode || 'pattern',
+        currentInstrument: mergedInstruments.some(inst => inst.id === saved.currentInstrument) ? saved.currentInstrument : base.currentInstrument,
+        playing: false,
+        currentStep: 0,
+        timer: null,
+        draggedPatternId: null,
+        draggedClipId: null,
+        patterns: flRepairPatternInstruments(saved.patterns, mergedInstruments),
+        playlist: (saved.playlist || []).map((clip, index) => ({
+          id: clip.id || `clip-${index}-${Math.random().toString(16).slice(2, 8)}`,
+          patternId: clip.patternId || (saved.patterns[0]?.id || 'pattern-1'),
+          track: Math.max(0, Math.min((saved.playlistTracks || base.playlistTracks) - 1, Number(clip.track || 0))),
+          startBar: Math.max(0, Number(clip.startBar || 0))
+        }))
+      };
+      if (!state.fl.patterns.length) state.fl.patterns = base.patterns;
+      state.flProjects.currentProjectId = project.id;
+      persistFLProjects();
+      return true;
+    }
+
+    function getFLCurrentProject() {
+      return state.flProjects.projects.find(item => item.id === state.flProjects.currentProjectId) || null;
+    }
+
+    function updateFLProjectNameChip() {
+      const chip = document.getElementById('flProjectName');
+      if (!chip) return;
+      const project = getFLCurrentProject();
+      chip.textContent = project ? project.name : 'Nenhum projeto aberto';
+    }
+
+    function renderFLProjectHome() {
+      const wrap = document.getElementById('flProjectList');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      if (!state.flProjects.projects.length) {
+        wrap.innerHTML = '<div class="fl-project-empty">Nenhum projeto ainda. Clique em <strong>Novo projeto</strong> para começar.</div>';
+        updateFLProjectNameChip();
+        return;
+      }
+      state.flProjects.projects.slice().sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).forEach(project => {
+        const card = document.createElement('div');
+        card.className = 'fl-project-card';
+        const patterns = Array.isArray(project.data?.patterns) ? project.data.patterns.length : 0;
+        const clips = Array.isArray(project.data?.playlist) ? project.data.playlist.length : 0;
+        const updated = project.updatedAt ? new Date(project.updatedAt).toLocaleString('pt-BR') : 'agora';
+        card.innerHTML = `<h4>${project.name}</h4><p>Patterns: ${patterns} • Clips: ${clips}<br>Última edição: ${updated}</p><div class="row"><button data-open-project="${project.id}">Abrir</button><button data-rename-project="${project.id}">Renomear</button><button data-delete-project="${project.id}">Excluir</button></div>`;
+        wrap.appendChild(card);
+      });
+      updateFLProjectNameChip();
+    }
+
+    function showFLProjectHome() {
+      const home = document.getElementById('flProjectHome');
+      if (home) home.classList.add('open');
+      renderFLProjectHome();
+      updateFLProjectNameChip();
+    }
+
+    function hideFLProjectHome() {
+      const home = document.getElementById('flProjectHome');
+      if (home) home.classList.remove('open');
+      updateFLProjectNameChip();
+    }
+
+    function refreshFLStudioUI() {
+      if (!state.fl) return;
+      document.getElementById('flBpmInput').value = state.fl.bpm;
+      document.getElementById('flStepsSelect').value = String(state.fl.steps);
+      document.getElementById('flPlayMode').value = state.fl.playMode;
+      renderFLNoteLabels();
+      renderFLRuler();
+      renderFLPatterns();
+      renderFLInstrumentList();
+      renderFLGrid();
+      setFLView(state.fl.currentView || 'piano');
+      updateFLProjectNameChip();
+    }
+
+    function openFLProject(projectId) {
+      stopFLPlayback(true);
+      if (!loadFLState(projectId)) return;
+      refreshFLStudioUI();
+      hideFLProjectHome();
+      document.getElementById('flStatus').textContent = `${getFLCurrentProject()?.name || 'Projeto'} aberto.`;
+    }
+
+    function createFLProject() {
+      if (!state.flProjects || !Array.isArray(state.flProjects.projects)) loadFLProjects();
+      const defaultName = `Projeto ${state.flProjects.projects.length + 1}`;
+      let name = '';
+      try {
+        name = (window.prompt('Nome do projeto:', defaultName) || '').trim();
+      } catch (_) {
+        name = defaultName;
+      }
+      if (!name) return;
+      const base = getFLDefaultState();
+      const id = `project-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`;
+      state.flProjects.projects.push({ id, name, updatedAt: Date.now(), data: cloneFLProjectData(base) });
+      state.flProjects.currentProjectId = id;
+      persistFLProjects();
+      renderFLProjectHome();
+      openFLProject(id);
+    }
     function ensureAudioContext() {
       if (!state.audioContext) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return null;
         state.audioContext = new AudioCtx();
       }
+      if (!state.masterGain) {
+        state.masterGain = state.audioContext.createGain();
+        state.masterGain.connect(state.audioContext.destination);
+      }
       if (state.audioContext.state === 'suspended') state.audioContext.resume();
+      try { state.masterGain.gain.setValueAtTime((state.systemVolume || 70) / 100, state.audioContext.currentTime); } catch (_) {}
       return state.audioContext;
     }
 
+    function getAudioOutputDestination(ctx) {
+      if (ctx && ctx === state.audioContext) {
+        ensureAudioContext();
+        return state.masterGain || ctx.destination;
+      }
+      return ctx.destination;
+    }
+
     function flNoteNameFromRow(row) {
-      const names = ['B','A#','A','G#','G','F#','F','E','D#','D','C#','C'];
-      const midi = 96 - row;
-      const name = names[midi % 12];
+      const names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+      const highestMidi = Number(state.fl?.highestMidi || 84);
+      const midi = highestMidi - row;
+      const name = names[((midi % 12) + 12) % 12];
       const octave = Math.floor(midi / 12) - 1;
       return `${name}${octave}`;
     }
 
     function flFrequencyFromRow(row) {
-      const midi = 96 - row;
+      const highestMidi = Number(state.fl?.highestMidi || 84);
+      const midi = highestMidi - row;
       return 440 * Math.pow(2, (midi - 69) / 12);
     }
 
@@ -1588,7 +2196,7 @@
       if (!exists) return;
       state.fl.currentInstrument = instId;
       const current = state.fl.instruments.find(inst => inst.id === instId);
-      document.getElementById('flInstrumentInfo').textContent = `${current?.name || 'Instrumento'} selecionado. Clique numa célula vazia para criar nota, arraste notas para mover e use a Playlist para montar a música.`;
+      document.getElementById('flInstrumentInfo').textContent = `${current?.name || 'Instrumento'} selecionado. Segure numa nota para ouvir a prévia, arraste para mover, use a alça para aumentar e monte a música na Playlist.`;
       document.getElementById('flInstrumentPicker').classList.remove('open');
       renderFLInstrumentList();
       saveFLState();
@@ -1607,12 +2215,26 @@
       });
     }
 
+    function renderFLSidebarInstrumentList() {
+      const wrap = document.getElementById('flInstrumentSidebarList');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      state.fl.instruments.forEach(inst => {
+        const el = document.createElement('div');
+        el.className = 'fl-inst' + (inst.id === state.fl.currentInstrument ? ' active' : '');
+        el.innerHTML = `<div class="fl-inst-top"><span>${inst.name}</span><span style="color:${inst.color}">●</span></div><small>${inst.kind === 'drum' ? 'Kit / bateria' : 'Instrumento melódico'}</small>`;
+        el.addEventListener('click', () => applyFLCurrentInstrument(inst.id));
+        wrap.appendChild(el);
+      });
+    }
+
     function renderFLInstrumentList() {
       const wrap = document.getElementById('flInstrumentList');
       const current = state.fl.instruments.find(inst => inst.id === state.fl.currentInstrument) || state.fl.instruments[0];
       document.getElementById('flCurrentInstrumentName').textContent = current?.name || 'Instrumento';
-      document.getElementById('flCurrentInstrumentMeta').textContent = current?.kind === 'drum' ? 'Bateria / percussão' : 'Instrumento melódico';
+      document.getElementById('flCurrentInstrumentMeta').textContent = current?.kind === 'drum' ? 'Bateria / kit breakcore' : 'Instrumento melódico';
       renderFLToolbarInstrumentSelect();
+      renderFLSidebarInstrumentList();
       wrap.innerHTML = '';
       state.fl.instruments.forEach(inst => {
         const el = document.createElement('div');
@@ -1849,39 +2471,65 @@
       renderFLPatternPalette();
     }
 
-    function flUpdatePlayhead(step) {
+    function flConfigurePlayheadMotion(instant = false) {
+      const duration = instant ? 0 : (60 / state.fl.bpm / 4);
+      ['flPlayhead','flSongPlayhead'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.transition = duration ? `left ${duration}s linear` : 'none';
+      });
+    }
+
+    function flUpdatePlayhead(step, instant = false) {
+      flConfigurePlayheadMotion(instant);
       document.getElementById('flPlayhead').style.left = `${step * 34}px`;
     }
 
-    function flUpdateSongPlayhead(songStep) {
+    function flUpdateSongPlayhead(songStep, instant = false) {
+      flConfigurePlayheadMotion(instant);
       document.getElementById('flSongPlayhead').style.left = `${110 + (songStep / 16) * 68}px`;
     }
 
     function flScheduleDrum(ctx, destination, inst, startTime) {
+      const type = inst.drumType || inst.id;
       const gain = ctx.createGain();
       gain.connect(destination);
-      if (inst.id === 'kick') {
+      if (type === 'kick' || type === 'gabber') {
         const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(150, startTime);
-        osc.frequency.exponentialRampToValueAtTime(45, startTime + 0.18);
-        gain.gain.setValueAtTime(0.9, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.18);
-        osc.connect(gain);
+        const shaper = ctx.createWaveShaper();
+        shaper.curve = new Float32Array(Array.from({ length: 512 }, (_, i) => {
+          const x = (i / 255.5) - 1;
+          return Math.tanh((type === 'gabber' ? 12 : 4) * x);
+        }));
+        osc.type = type === 'gabber' ? 'square' : 'sine';
+        osc.frequency.setValueAtTime(type === 'gabber' ? 210 : 150, startTime);
+        osc.frequency.exponentialRampToValueAtTime(type === 'gabber' ? 36 : 45, startTime + (type === 'gabber' ? 0.28 : 0.18));
+        gain.gain.setValueAtTime(type === 'gabber' ? 1.1 : 0.9, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + (type === 'gabber' ? 0.28 : 0.18));
+        osc.connect(type === 'gabber' ? shaper : gain);
+        if (type === 'gabber') shaper.connect(gain);
         osc.start(startTime);
-        osc.stop(startTime + 0.2);
+        osc.stop(startTime + (type === 'gabber' ? 0.3 : 0.2));
         return;
       }
-      const duration = inst.id === 'hat' ? 0.045 : 0.16;
+      const duration = type === 'hat' || type === 'glitchhat' ? 0.05 : type === 'amen' ? 0.12 : 0.16;
       const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * duration)), ctx.sampleRate);
       const data = buffer.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      for (let i = 0; i < data.length; i++) {
+        const t = i / data.length;
+        let value = Math.random() * 2 - 1;
+        if (type === 'amen') value *= (1 - t) * (i % 23 < 4 ? 1.3 : 0.7);
+        if (type === 'jungle') value *= (i % 17 < 6 ? 1.1 : 0.4);
+        if (type === 'glitchhat') value *= (i % 11 < 3 ? 1.6 : 0.25);
+        if (type === 'clap') value *= (i % 900 < 160 ? 1 : 0.35);
+        data[i] = value;
+      }
       const source = ctx.createBufferSource();
       source.buffer = buffer;
       const filter = ctx.createBiquadFilter();
-      filter.type = inst.id === 'hat' ? 'highpass' : 'bandpass';
-      filter.frequency.value = inst.id === 'hat' ? 7000 : 1800;
-      gain.gain.setValueAtTime(inst.id === 'hat' ? 0.18 : 0.34, startTime);
+      filter.type = type === 'hat' || type === 'glitchhat' ? 'highpass' : 'bandpass';
+      filter.frequency.value = type === 'hat' ? 7800 : type === 'glitchhat' ? 9500 : type === 'amen' ? 2400 : type === 'jungle' ? 2100 : type === 'clap' ? 1400 : 1800;
+      gain.gain.setValueAtTime(type === 'amen' ? 0.42 : type === 'glitchhat' ? 0.2 : 0.34, startTime);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
       source.connect(filter).connect(gain);
       source.start(startTime);
@@ -1889,24 +2537,34 @@
     }
 
     function flScheduleTone(ctx, destination, inst, row, lengthSteps, startTime, bpm) {
-      const freq = flFrequencyFromRow(row);
+      const baseFreq = flFrequencyFromRow(row) * Math.pow(2, (inst.octaveShift || 0));
       const oscA = ctx.createOscillator();
       const oscB = ctx.createOscillator();
       const gain = ctx.createGain();
       const filter = ctx.createBiquadFilter();
       oscA.type = inst.wave || 'triangle';
-      oscB.type = inst.wave === 'square' ? 'triangle' : (inst.wave || 'triangle');
-      oscA.frequency.setValueAtTime(freq, startTime);
-      oscB.frequency.setValueAtTime(freq * Math.pow(2, (inst.detune || 0) / 1200), startTime);
-      filter.type = inst.id === 'bass' ? 'lowpass' : 'bandpass';
-      filter.frequency.value = inst.id === 'bass' ? 900 : inst.id === 'pad' ? 1500 : 2600;
-      const hold = Math.max(0.14, (60 / bpm / 4) * lengthSteps * 0.9);
+      oscB.type = inst.waveB || (inst.wave === 'square' ? 'triangle' : (inst.wave || 'triangle'));
+      oscA.frequency.setValueAtTime(baseFreq, startTime);
+      oscB.frequency.setValueAtTime(baseFreq * Math.pow(2, (inst.detune || 0) / 1200), startTime);
+      filter.type = inst.id === 'bass' || inst.id === 'subbass' ? 'lowpass' : inst.id === 'guitar' ? 'highpass' : 'bandpass';
+      filter.frequency.value = inst.filter || (inst.id === 'pad' ? 1500 : 2600);
+      const stepSeconds = 60 / bpm / 4;
+      const hold = Math.max(inst.id === 'pluck' || inst.id === 'bell' ? 0.08 : 0.14, stepSeconds * lengthSteps * (inst.id === 'pad' ? 1.2 : 0.92));
+      const peak = inst.id === 'bass' || inst.id === 'subbass' ? 0.24 : inst.id === 'pad' ? 0.12 : inst.id === 'guitar' ? 0.15 : inst.id === 'rave' ? 0.2 : 0.16;
       gain.gain.setValueAtTime(0.001, startTime);
-      gain.gain.linearRampToValueAtTime(inst.id === 'bass' ? 0.24 : inst.id === 'pad' ? 0.12 : 0.16, startTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.05, startTime + hold);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + hold + 0.08);
+      gain.gain.linearRampToValueAtTime(peak, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(inst.id === 'pad' ? 0.07 : 0.045, startTime + hold);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + hold + 0.1);
       oscA.connect(filter).connect(gain).connect(destination);
       oscB.connect(filter);
+      if (inst.bell) {
+        const oscC = ctx.createOscillator();
+        oscC.type = 'sine';
+        oscC.frequency.setValueAtTime(baseFreq * 2.01, startTime);
+        oscC.connect(filter);
+        oscC.start(startTime);
+        oscC.stop(startTime + hold + 0.12);
+      }
       oscA.start(startTime); oscB.start(startTime);
       oscA.stop(startTime + hold + 0.12); oscB.stop(startTime + hold + 0.12);
     }
@@ -1922,7 +2580,12 @@
     function flPlayTone(inst, row, lengthSteps) {
       const ctx = ensureAudioContext();
       if (!ctx) return;
-      flScheduleNoteOnContext(ctx, ctx.destination, inst, row, lengthSteps, ctx.currentTime, state.fl.bpm);
+      flScheduleNoteOnContext(ctx, getAudioOutputDestination(ctx), inst, row, lengthSteps, ctx.currentTime, state.fl.bpm);
+    }
+
+    function flPreviewNote(note) {
+      const inst = flFindInstrumentByRef(note.instrument) || state.fl.instruments[0];
+      if (inst) flPlayTone(inst, note.row, Math.max(1, note.length || 1));
     }
 
     function flTriggerStep(step) {
@@ -1937,21 +2600,21 @@
           if (localStep < 0 || localStep >= state.fl.steps) return;
           pattern.notes.forEach(note => {
             if (note.col !== localStep) return;
-            const inst = state.fl.instruments.find(i => i.id === note.instrument);
+            const inst = flFindInstrumentByRef(note.instrument);
             if (inst) flPlayTone(inst, note.row, note.length);
           });
         });
-        flUpdateSongPlayhead(currentSongStep);
-        flUpdatePlayhead(currentSongStep % state.fl.steps);
+        flUpdateSongPlayhead(currentSongStep, false);
+        flUpdatePlayhead(currentSongStep % state.fl.steps, false);
         return;
       }
       flCurrentPattern().notes.forEach(note => {
         if (note.col !== step) return;
-        const inst = state.fl.instruments.find(i => i.id === note.instrument);
+        const inst = flFindInstrumentByRef(note.instrument);
         if (inst) flPlayTone(inst, note.row, note.length);
       });
-      flUpdatePlayhead(step);
-      flUpdateSongPlayhead(0);
+      flUpdatePlayhead(step, false);
+      flUpdateSongPlayhead(0, false);
     }
 
     function stopFLPlayback(reset = true) {
@@ -1961,8 +2624,8 @@
       state.fl.timer = null;
       if (reset) {
         state.fl.currentStep = 0;
-        flUpdatePlayhead(0);
-        flUpdateSongPlayhead(0);
+        flUpdatePlayhead(0, true);
+        flUpdateSongPlayhead(0, true);
       }
       document.getElementById('flStatus').textContent = `${state.fl.playMode === 'song' ? 'Música' : flCurrentPattern().name} parado.`;
     }
@@ -1976,6 +2639,7 @@
       const loopSteps = state.fl.playMode === 'song' ? flGetSongLengthSteps() : state.fl.steps;
       if (state.fl.currentStep >= loopSteps) state.fl.currentStep = 0;
       document.getElementById('flStatus').textContent = state.fl.playMode === 'song' ? `Tocando música completa em ${state.fl.bpm} BPM.` : `Tocando ${flCurrentPattern().name} em ${state.fl.bpm} BPM.`;
+      flConfigurePlayheadMotion(true);
       flTriggerStep(state.fl.currentStep);
       state.fl.timer = setInterval(() => {
         state.fl.currentStep = (state.fl.currentStep + 1) % loopSteps;
@@ -2005,17 +2669,17 @@
             const pattern = flPatternById(clip.patternId);
             if (!pattern) return;
             pattern.notes.forEach(note => {
-              const inst = state.fl.instruments.find(i => i.id === note.instrument);
+              const inst = flFindInstrumentByRef(note.instrument);
               if (!inst) return;
               const startTime = (clip.startBar * 16 + note.col) * stepDuration;
-              flScheduleNoteOnContext(offline, offline.destination, inst, note.row, note.length, startTime, state.fl.bpm);
+              flScheduleNoteOnContext(offline, getAudioOutputDestination(offline), inst, note.row, note.length, startTime, state.fl.bpm);
             });
           });
         } else {
           flCurrentPattern().notes.forEach(note => {
-            const inst = state.fl.instruments.find(i => i.id === note.instrument);
+            const inst = flFindInstrumentByRef(note.instrument);
             if (!inst) return;
-            flScheduleNoteOnContext(offline, offline.destination, inst, note.row, note.length, note.col * stepDuration, state.fl.bpm);
+            flScheduleNoteOnContext(offline, getAudioOutputDestination(offline), inst, note.row, note.length, note.col * stepDuration, state.fl.bpm);
           });
         }
         const rendered = await offline.startRendering();
@@ -2075,7 +2739,8 @@
     }
 
     function setupFLStudio() {
-      loadFLState();
+      loadFLProjects();
+      if (!loadFLState()) state.fl = getFLDefaultState();
       document.getElementById('flBpmInput').value = state.fl.bpm;
       document.getElementById('flStepsSelect').value = String(state.fl.steps);
       document.getElementById('flPlayMode').value = state.fl.playMode;
@@ -2092,13 +2757,57 @@
       const ruler = document.getElementById('flRuler');
       const playlistWrap = document.getElementById('flPlaylistWrap');
       const clipLayer = document.getElementById('flClipLayer');
+      const playlistHeader = document.getElementById('flPlaylistHeader');
       let ignoreLabelSync = false;
+      let notePreviewTimeout = null;
 
       document.getElementById('flInstrumentPickerBtn').addEventListener('click', () => {
         document.getElementById('flInstrumentPicker').classList.toggle('open');
       });
       document.getElementById('flToolbarInstrument').addEventListener('change', (e) => {
         applyFLCurrentInstrument(e.target.value);
+      });
+      document.getElementById('flProjectsBtn').addEventListener('click', () => {
+        stopFLPlayback(true);
+        if (!state.flProjects || !Array.isArray(state.flProjects.projects)) loadFLProjects();
+        showFLProjectHome();
+      });
+      document.getElementById('flNewProjectBtn').addEventListener('click', () => createFLProject());
+      document.getElementById('flRefreshProjectsBtn').addEventListener('click', () => renderFLProjectHome());
+      document.getElementById('flProjectList').addEventListener('click', (e) => {
+        const openId = e.target.closest('[data-open-project]')?.dataset.openProject;
+        if (openId) {
+          openFLProject(openId);
+          return;
+        }
+        const renameId = e.target.closest('[data-rename-project]')?.dataset.renameProject;
+        if (renameId) {
+          const project = state.flProjects.projects.find(item => item.id === renameId);
+          if (!project) return;
+          const nextName = (prompt('Novo nome do projeto:', project.name) || '').trim();
+          if (!nextName) return;
+          project.name = nextName;
+          project.updatedAt = Date.now();
+          persistFLProjects();
+          renderFLProjectHome();
+          updateFLProjectNameChip();
+          return;
+        }
+        const deleteId = e.target.closest('[data-delete-project]')?.dataset.deleteProject;
+        if (deleteId) {
+          const project = state.flProjects.projects.find(item => item.id === deleteId);
+          if (!project) return;
+          if (!confirm(`Excluir o projeto "${project.name}"?`)) return;
+          state.flProjects.projects = state.flProjects.projects.filter(item => item.id !== deleteId);
+          if (state.flProjects.currentProjectId === deleteId) {
+            state.flProjects.currentProjectId = null;
+            state.fl = getFLDefaultState();
+            refreshFLStudioUI();
+            showFLProjectHome();
+          }
+          persistFLProjects();
+          renderFLProjectHome();
+        }
       });
 
       document.getElementById('flPlayBtn').addEventListener('click', () => {
@@ -2138,6 +2847,9 @@
         ruler.style.transform = `translateX(${-gridWrap.scrollLeft}px)`;
         if (!ignoreLabelSync) noteLabels.scrollTop = gridWrap.scrollTop;
       });
+      playlistWrap.addEventListener('scroll', () => {
+        playlistHeader.style.transform = `translateX(${-playlistWrap.scrollLeft}px)`;
+      });
       noteLabels.addEventListener('scroll', () => {
         ignoreLabelSync = true;
         gridWrap.scrollTop = noteLabels.scrollTop;
@@ -2176,6 +2888,7 @@
         const noteId = noteEl.dataset.noteId;
         const note = flCurrentPattern().notes.find(item => item.id === noteId);
         if (!note) return;
+        notePreviewTimeout = setTimeout(() => flPreviewNote(note), 140);
         if (handle) {
           e.preventDefault();
           e.stopPropagation();
@@ -2187,6 +2900,7 @@
             renderFLGrid();
           }
           function onUp() {
+            clearTimeout(notePreviewTimeout);
             saveFLState();
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onUp);
@@ -2217,6 +2931,7 @@
           renderFLGrid();
         }
         function onUp() {
+          clearTimeout(notePreviewTimeout);
           if (moved) {
             saveFLState();
             document.getElementById('flStatus').textContent = 'Nota movida.';
@@ -2283,6 +2998,7 @@
           renderFLPlaylist();
         }
         function onUp() {
+          clearTimeout(notePreviewTimeout);
           if (moved) {
             saveFLState();
             document.getElementById('flStatus').textContent = 'Clip movido na playlist.';
@@ -2313,6 +3029,31 @@
         renderFLGrid();
         document.getElementById('flStatus').textContent = `Grade alterada para ${state.fl.steps} passos.`;
         if (state.fl.playing) startFLPlayback();
+      });
+
+      document.getElementById('flTimelineLeftBtn').addEventListener('click', () => {
+        const amount = 320;
+        if (state.fl.currentView === 'song') playlistWrap.scrollBy({ left: -amount, behavior: 'smooth' });
+        else gridWrap.scrollBy({ left: -amount, behavior: 'smooth' });
+      });
+      document.getElementById('flTimelineRightBtn').addEventListener('click', () => {
+        const amount = 320;
+        if (state.fl.currentView === 'song') playlistWrap.scrollBy({ left: amount, behavior: 'smooth' });
+        else gridWrap.scrollBy({ left: amount, behavior: 'smooth' });
+      });
+      document.getElementById('flOctaveUpBtn').addEventListener('click', () => {
+        state.fl.highestMidi = Math.min(108, Number(state.fl.highestMidi || 84) + 12);
+        saveFLState();
+        renderFLNoteLabels();
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = 'Teclas movidas para cima.';
+      });
+      document.getElementById('flOctaveDownBtn').addEventListener('click', () => {
+        state.fl.highestMidi = Math.max(36, Number(state.fl.highestMidi || 84) - 12);
+        saveFLState();
+        renderFLNoteLabels();
+        renderFLGrid();
+        document.getElementById('flStatus').textContent = 'Teclas movidas para baixo.';
       });
 
       document.getElementById('flPlayMode').addEventListener('change', (e) => {
@@ -2352,7 +3093,7 @@
         { label: 'Excel', type: 'Aplicativo', action: () => openApp('excel') },
         { label: 'PowerPoint', type: 'Aplicativo', action: () => openApp('powerpoint') },
         { label: 'Lixeira', type: 'Aplicativo', action: () => openApp('recycle') },
-        { label: 'Criador de Música', type: 'Aplicativo', action: () => openApp('flstudio') }
+        { label: 'Kuatz Studio', type: 'Aplicativo', action: () => openApp('flstudio') }
       ];
       const fileEntries = Object.entries(folderData).flatMap(([folder, items]) => (items || []).map(item => ({
         label: item.name,
@@ -2562,6 +3303,10 @@
 
 
     function openFile(item) {
+      if (item.appDocId) {
+        openWordDocument(item.appDocId);
+        return;
+      }
       if (['image','audio','video'].includes(item.type)) {
         openApp('media');
         openMediaItem(item);
@@ -2590,13 +3335,19 @@
       win.dataset.minimized = 'false';
       focusWindow(win);
       if (app === 'explorer') renderFolder(extra || state.explorerFolder || 'Documentos');
+      if (app === 'documents') renderDocumentsApp();
       if (app === 'paint') resizeCanvas();
       if (app === 'recycle') renderRecycleBin();
       if (app === 'media') renderMediaList();
       if (app === 'fotos') renderPhotosApp();
       if (app === 'skype') renderSkype();
       if (app === 'videoeditor') resizeVideoEditorCanvas();
-      if (app === 'flstudio') renderFLGrid();
+      if (app === 'flstudio') {
+        if (!state.flProjects || !Array.isArray(state.flProjects.projects)) loadFLProjects();
+        if (!state.fl) state.fl = getFLDefaultState();
+        renderFLProjectHome();
+        showFLProjectHome();
+      }
       updateTaskbarEntries();
     }
 
@@ -2726,12 +3477,13 @@
     }
 
     function bootToLogin() {
-      startBootSequence();
+      playIntroSplashThenBoot();
     }
 
     function login() {
       showScreen('desktop');
       openApp('edge');
+      startupAudio.volume = (state.systemVolume || 70) / 100;
       startupAudio.play().catch(() => {});
       addNotification('Sessão iniciada com sucesso.');
     }
@@ -2856,8 +3608,7 @@
         });
         icon.addEventListener('dblclick', () => {
           const app = icon.dataset.app;
-          if (app === 'documents') openApp('explorer', 'Documentos');
-          else openApp(app);
+          openApp(app);
         });
       });
     }
@@ -2870,6 +3621,16 @@
         if (item.dataset.folder === 'Lixeira') openApp('recycle');
         else renderFolder(item.dataset.folder);
       });
+    }
+
+
+    function setupDocuments() {
+      state.documents = getSavedDocuments();
+      syncDocumentsFolder();
+      renderDocumentsApp();
+      document.getElementById('createDocumentBtn').addEventListener('click', createDocument);
+      document.getElementById('renameDocumentBtn').addEventListener('click', renameCurrentDocument);
+      document.getElementById('deleteDocumentBtn').addEventListener('click', deleteCurrentDocument);
     }
 
     function setupNotepad() {
@@ -2984,6 +3745,10 @@
       });
       document.getElementById('playStartupBtn').addEventListener('click', () => startupAudio.play().catch(()=>{}));
       document.getElementById('openActionCenterBtn').addEventListener('click', () => actionCenter.classList.add('open'));
+      document.getElementById('formatComputerBtn').addEventListener('click', startFormatComputer);
+      document.getElementById('systemVolumeSliderSettings').addEventListener('input', (e) => setSystemVolume(e.target.value, true));
+      document.getElementById('systemVolumeSliderSettings').addEventListener('change', (e) => setSystemVolume(e.target.value));
+      updateStorageUI();
     }
 
     function setupRecycle() {
@@ -3005,11 +3770,32 @@
 
     function setupOffice() {
       document.querySelectorAll('[data-format]').forEach(btn => btn.addEventListener('click', () => document.execCommand(btn.dataset.format)));
+      document.querySelectorAll('[data-align]').forEach(btn => btn.addEventListener('click', () => document.execCommand(btn.dataset.align)));
       const wordEditor = document.getElementById('wordEditor');
       wordEditor.innerHTML = localStorage.getItem('win10_word') || '<h2>Documento sem título</h2><p>Escreva aqui...</p>';
+      document.getElementById('wordFontSizeSelect').addEventListener('change', (e) => document.execCommand('fontSize', false, e.target.value));
+      document.getElementById('wordColorInput').addEventListener('input', (e) => document.execCommand('foreColor', false, e.target.value));
+      document.getElementById('newWordDocBtn').addEventListener('click', createDocument);
       document.getElementById('saveWordBtn').addEventListener('click', () => {
-        localStorage.setItem('win10_word', wordEditor.innerHTML);
-        showToast('Documento do Word salvo.');
+        const content = wordEditor.innerHTML;
+        localStorage.setItem('win10_word', content);
+        const currentDoc = (state.documents || []).find(item => item.id === state.currentDocumentId);
+        if (currentDoc) {
+          const currentBytes = estimateTextBytes(currentDoc.content);
+          const nextBytes = estimateTextBytes(content);
+          const extra = Math.max(0, nextBytes - currentBytes);
+          if (!canAllocateBytes(extra)) {
+            showToast('Armazenamento cheio. Não foi possível salvar.');
+            return;
+          }
+          currentDoc.content = content;
+          currentDoc.updatedAt = Date.now();
+          persistDocuments();
+          showToast(`Documento "${currentDoc.name}" salvo.`);
+        } else {
+          showToast('Documento do Word salvo.');
+        }
+        updateStorageUI();
       });
 
       const excelGrid = document.getElementById('excelGrid');
@@ -3060,39 +3846,68 @@
       document.getElementById('actionCenterToggle').addEventListener('click', (e) => {
         e.stopPropagation();
         actionCenter.classList.toggle('open');
+        document.getElementById('volumePanel').classList.remove('open');
       });
       actionCenter.addEventListener('click', e => e.stopPropagation());
+      const volumeTrayBtn = document.getElementById('volumeTrayBtn');
+      const volumePanel = document.getElementById('volumePanel');
+      const volumeSlider = document.getElementById('systemVolumeSlider');
+      volumeTrayBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        volumePanel.classList.toggle('open');
+        actionCenter.classList.remove('open');
+      });
+      volumePanel.addEventListener('click', e => e.stopPropagation());
+      volumeSlider.addEventListener('input', (e) => setSystemVolume(e.target.value, true));
+      volumeSlider.addEventListener('change', (e) => setSystemVolume(e.target.value));
+      setSystemVolume(state.systemVolume, true);
     }
 
+
+    window.addEventListener('error', (event) => {
+      const status = document.getElementById('flStatus');
+      if (status && event?.message) status.textContent = `Erro detectado: ${event.message}`;
+      console.error('Erro global no Windows HTML:', event.error || event.message || event);
+    });
+
     (async () => {
-      updateClocks();
-      setInterval(updateClocks, 1000);
-      setupWindows();
-      setupStart();
-      setupDesktopIcons();
-      setupDesktopSelection();
-      setupContextMenu();
-      setupExplorer();
-      setupNotepad();
-      setupCalculator();
-      setupPaint();
-      setupEdge();
-      setupSettings();
-      setupRecycle();
-      setupOffice();
-      setupPowerButtons();
-      setupLogin();
-      setupTaskbar();
-      setupPhotosApp();
-      setupSkype();
-      setupSearch();
-      setupVideoEditor();
-      setupFLStudio();
-      await setupImports();
-      initWallpaper();
-      bootToLogin();
-      window.addEventListener('resize', () => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); });
-      setTimeout(() => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); }, 120);
+      try {
+        updateClocks();
+        setInterval(updateClocks, 1000);
+        setupWindows();
+        setupStart();
+        setupDesktopIcons();
+        setupDesktopSelection();
+        setupContextMenu();
+        setupExplorer();
+        setupDocuments();
+        setupNotepad();
+        setupCalculator();
+        setupPaint();
+        setupEdge();
+        setupSettings();
+        setupRecycle();
+        setupOffice();
+        setupPowerButtons();
+        setupLogin();
+        setupTaskbar();
+        setupPhotosApp();
+        setupSkype();
+        setupSearch();
+        setupVideoEditor();
+        setupFLStudio();
+        await setupImports();
+        initWallpaper();
+        bootToLogin();
+        window.addEventListener('resize', () => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); });
+        setTimeout(() => { resizeCanvas(); resizeVideoEditorCanvas(); if (state.fl) renderFLGrid(); }, 120);
+      } catch (err) {
+        console.error('Falha na inicialização do Windows HTML:', err);
+        try {
+          setupLogin();
+        } catch (_) {}
+        forceBootToLoginSafe();
+      }
     })();
   </script>
 </body>
