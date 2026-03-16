@@ -432,6 +432,24 @@
     }
 
 
+    .html-editor-wrap { display:grid; grid-template-columns: 220px 1fr 42%; height:100%; background:#1e1e1e; color:#fff; }
+    .html-editor-sidebar { background:#181818; border-right:1px solid rgba(255,255,255,.08); display:flex; flex-direction:column; min-width:0; }
+    .html-editor-toolbar { padding:10px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; gap:8px; flex-wrap:wrap; background:#202020; }
+    .html-editor-toolbar button, .html-editor-toolbar select { background:#2c2c2c; color:#fff; border:1px solid rgba(255,255,255,.12); padding:7px 10px; }
+    .html-editor-files { padding:10px; overflow:auto; }
+    .html-editor-file { padding:10px; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:#242424; margin-bottom:8px; cursor:pointer; }
+    .html-editor-file.active, .html-editor-file:hover { background:#2e3e56; border-color:#5da2ff; }
+    .html-editor-main { display:flex; flex-direction:column; min-width:0; }
+    .html-editor-tabs { display:flex; gap:6px; padding:10px; background:#181818; border-bottom:1px solid rgba(255,255,255,.08); overflow:auto; }
+    .html-editor-tab { padding:8px 12px; border-radius:999px; background:#2a2a2a; border:1px solid rgba(255,255,255,.1); cursor:pointer; white-space:nowrap; }
+    .html-editor-tab.active { background:#0078d7; border-color:#0078d7; }
+    .html-editor-code { flex:1; width:100%; resize:none; border:none; outline:none; background:#1e1e1e; color:#d4d4d4; font:14px/1.45 Consolas, monospace; padding:14px; }
+    .html-editor-preview { border-left:1px solid rgba(255,255,255,.08); background:#fff; display:flex; flex-direction:column; min-width:0; }
+    .html-editor-preview-top { padding:8px 10px; background:#f3f3f3; color:#222; border-bottom:1px solid #ddd; font-size:13px; }
+    .html-editor-frame { flex:1; width:100%; border:none; background:#fff; }
+    @media (max-width: 1100px) { .html-editor-wrap { grid-template-columns: 190px 1fr; grid-template-rows: 1fr 42%; } .html-editor-preview { grid-column:1 / -1; border-left:none; border-top:1px solid rgba(255,255,255,.08); } }
+
+
     .intro-splash {
       position: absolute; inset: 0; background: #000; color: #fff; z-index: 12000;
       display: grid; place-items: center; text-align: center; opacity: 1; transition: opacity 1.2s ease;
@@ -529,6 +547,7 @@
         <div class="desktop-icon" data-app="videoeditor" data-label="Editor de Vídeo"><div class="icon">🎬</div><div class="label">Editor de Vídeo</div></div>
         <div class="desktop-icon" data-app="skype" data-label="Skype"><div class="icon">💬</div><div class="label">Skype</div></div>
         <div class="desktop-icon" data-app="flstudio" data-label="Kuatz Studio"><div class="icon">🎹</div><div class="label">Kuatz Studio</div></div>
+        <div class="desktop-icon" data-app="htmleditor" data-label="Editor HTML"><div class="icon">🧩</div><div class="label">Editor HTML</div></div>
       </div>
 
       <div id="selectionBox" class="selection-box"></div>
@@ -564,6 +583,7 @@
         <div class="start-item" data-open="videoeditor">🎬 Editor de Vídeo</div>
         <div class="start-item" data-open="skype">💬 Skype</div>
         <div class="start-item" data-open="flstudio">🎹 Kuatz Studio</div>
+        <div class="start-item" data-open="htmleditor">🧩 Editor HTML</div>
       </div>
       <div class="start-tiles">
         <h3>Fixado</h3>
@@ -578,6 +598,7 @@
           <div class="tile" data-open="videoeditor">Editor Vídeo</div>
           <div class="tile dark" data-open="skype">Skype</div>
           <div class="tile" data-open="flstudio">Kuatz Studio</div>
+          <div class="tile dark" data-open="htmleditor">Editor HTML</div>
           <div class="tile dark" data-open="settings">Configurações</div>
         </div>
       </div>
@@ -989,6 +1010,37 @@
       <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
     </div>
 
+
+    <!-- HTML Editor -->
+    <div class="window" id="win-htmleditor" data-app="htmleditor" data-title="Editor HTML" style="left:180px; top:70px; width:1080px; height:660px;">
+      <div class="titlebar"><div class="title">Editor HTML</div><div class="window-controls"><button class="win-btn" data-action="minimize">—</button><button class="win-btn" data-action="maximize">▢</button><button class="win-btn close" data-action="close">✕</button></div></div>
+      <div class="window-body html-editor-wrap">
+        <div class="html-editor-sidebar">
+          <div class="html-editor-toolbar">
+            <button id="htmlEditorNewFileBtn">Novo arquivo</button>
+            <button id="htmlEditorResetBtn">Restaurar modelo</button>
+          </div>
+          <div class="html-editor-files" id="htmlEditorFiles"></div>
+        </div>
+        <div class="html-editor-main">
+          <div class="html-editor-toolbar">
+            <button id="htmlEditorRunBtn">Executar</button>
+            <button id="htmlEditorSaveBtn">Salvar</button>
+            <button id="htmlEditorDeleteBtn">Excluir</button>
+            <button id="htmlEditorExitBtn">Sair</button>
+            <span id="htmlEditorStatus" style="margin-left:auto;color:#bbb;font-size:12px;">Pronto</span>
+          </div>
+          <div class="html-editor-tabs" id="htmlEditorTabs"></div>
+          <textarea id="htmlEditorCode" class="html-editor-code" spellcheck="false"></textarea>
+        </div>
+        <div class="html-editor-preview">
+          <div class="html-editor-preview-top">Preview</div>
+          <iframe id="htmlEditorFrame" class="html-editor-frame" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+        </div>
+      </div>
+      <div class="resize-handle e"></div><div class="resize-handle s"></div><div class="resize-handle se"></div>
+    </div>
+
     <div id="searchPanel" class="search-panel">
       <div class="search-header">Pesquisar no Windows</div>
       <div id="searchResults"></div>
@@ -1018,6 +1070,7 @@
         <button class="task-app" data-open="explorer" id="task-explorer" title="Explorador">📁</button>
         <button class="task-app" data-open="store" id="task-store" title="Store">🛍️</button>
         <button class="task-app" data-open="flstudio" id="task-flstudio" title="Kuatz Studio">🎹</button>
+        <button class="task-app" data-open="htmleditor" id="task-htmleditor" title="Editor HTML">🧩</button>
         <div id="taskbarWindows"></div>
       </div>
       <div class="tb-right">
@@ -3864,6 +3917,193 @@
     }
 
 
+    function getHtmlEditorDefaultFiles() {
+      return [
+        { id: 'index.html', name: 'index.html', type: 'html', content: ['<!DOCTYPE html>','<html lang="pt-BR">','<head>','  <meta charset="UTF-8">','  <meta name="viewport" content="width=device-width, initial-scale=1.0">','  <title>Meu site</title>','  <link rel="stylesheet" href="style.css">','</head>','<body>','  <h1>Olá, mundo!</h1>','  <p>Edite este projeto no Editor HTML.</p>','  <script src="script.js"><\/script>','</body>','</html>'].join('\n') },
+        { id: 'style.css', name: 'style.css', type: 'css', content: ['body {','  font-family: Arial, sans-serif;','  background: #f4f7fb;','  color: #1f2d3d;','  padding: 32px;','}','','h1 {','  color: #0078d7;','}'].join('\n') },
+        { id: 'script.js', name: 'script.js', type: 'js', content: ["console.log('Projeto iniciado');"].join('\n') }
+      ];
+    }
+
+    function loadHtmlEditorState() {
+      const raw = localStorage.getItem('win10_html_editor_files');
+      let files = [];
+      try { files = JSON.parse(raw || '[]'); } catch (_) { files = []; }
+      if (!Array.isArray(files) || !files.length) files = getHtmlEditorDefaultFiles();
+      state.htmlEditor = {
+        files,
+        activeId: files[0]?.id || 'index.html'
+      };
+    }
+
+    function persistHtmlEditorState() {
+      if (!state.htmlEditor) return;
+      localStorage.setItem('win10_html_editor_files', JSON.stringify(state.htmlEditor.files));
+    }
+
+    function renderHtmlEditorList() {
+      const root = document.getElementById('htmlEditorFiles');
+      const tabs = document.getElementById('htmlEditorTabs');
+      if (!root || !tabs || !state.htmlEditor) return;
+      root.innerHTML = '';
+      tabs.innerHTML = '';
+      state.htmlEditor.files.forEach(file => {
+        const item = document.createElement('div');
+        item.className = 'html-editor-file' + (file.id === state.htmlEditor.activeId ? ' active' : '');
+        item.textContent = file.name;
+        item.addEventListener('click', () => {
+          saveHtmlEditorCurrentBuffer();
+          state.htmlEditor.activeId = file.id;
+          renderHtmlEditor();
+        });
+        root.appendChild(item);
+
+        const tab = document.createElement('button');
+        tab.className = 'html-editor-tab' + (file.id === state.htmlEditor.activeId ? ' active' : '');
+        tab.textContent = file.name;
+        tab.addEventListener('click', () => {
+          saveHtmlEditorCurrentBuffer();
+          state.htmlEditor.activeId = file.id;
+          renderHtmlEditor();
+        });
+        tabs.appendChild(tab);
+      });
+    }
+
+    function getActiveHtmlEditorFile() {
+      return state.htmlEditor?.files.find(file => file.id === state.htmlEditor.activeId) || state.htmlEditor?.files[0] || null;
+    }
+
+    function saveHtmlEditorCurrentBuffer() {
+      const file = getActiveHtmlEditorFile();
+      const area = document.getElementById('htmlEditorCode');
+      if (file && area) file.content = area.value;
+    }
+
+    function buildHtmlEditorPreviewDoc() {
+      const files = state.htmlEditor?.files || [];
+      const htmlFile = files.find(file => /\.html?$/i.test(file.name)) || files[0];
+      const cssFiles = files.filter(file => /\.css$/i.test(file.name));
+      const jsFiles = files.filter(file => /\.js$/i.test(file.name));
+      let html = htmlFile ? htmlFile.content : '<h1>Sem HTML</h1>';
+      const cssBundle = cssFiles.map(file => file.content).join('\n\n');
+      const jsBundle = jsFiles.map(file => file.content).join('\n\n');
+      if (cssBundle) {
+        if (html.includes('</head>')) html = html.replace('</head>', `<style>${cssBundle}</style></head>`);
+        else html = `<style>${cssBundle}</style>` + html;
+      }
+      if (jsBundle) {
+        const scriptTag = `<script>${jsBundle}<\/script>`;
+        if (html.includes('</body>')) html = html.replace('</body>', scriptTag + '</body>');
+        else html += scriptTag;
+      }
+      return html;
+    }
+
+    function runHtmlEditorPreview() {
+      saveHtmlEditorCurrentBuffer();
+      const frame = document.getElementById('htmlEditorFrame');
+      if (frame) frame.srcdoc = buildHtmlEditorPreviewDoc();
+      const status = document.getElementById('htmlEditorStatus');
+      if (status) status.textContent = 'Preview atualizado';
+      persistHtmlEditorState();
+    }
+
+    function renderHtmlEditor() {
+      renderHtmlEditorList();
+      const file = getActiveHtmlEditorFile();
+      const area = document.getElementById('htmlEditorCode');
+      const status = document.getElementById('htmlEditorStatus');
+      if (!file || !area) return;
+      area.value = file.content || '';
+      if (status) status.textContent = `Editando ${file.name}`;
+    }
+
+    function setupHtmlEditor() {
+      loadHtmlEditorState();
+      const area = document.getElementById('htmlEditorCode');
+      document.getElementById('htmlEditorRunBtn').addEventListener('click', runHtmlEditorPreview);
+      document.getElementById('htmlEditorSaveBtn').addEventListener('click', () => {
+        saveHtmlEditorCurrentBuffer();
+        persistHtmlEditorState();
+        const status = document.getElementById('htmlEditorStatus');
+        if (status) status.textContent = 'Arquivos salvos';
+        showToast('Projeto HTML salvo.');
+      });
+      document.getElementById('htmlEditorResetBtn').addEventListener('click', () => {
+        if (!confirm('Restaurar o projeto HTML padrão?')) return;
+        state.htmlEditor.files = getHtmlEditorDefaultFiles();
+        state.htmlEditor.activeId = state.htmlEditor.files[0].id;
+        persistHtmlEditorState();
+        renderHtmlEditor();
+        runHtmlEditorPreview();
+      });
+      document.getElementById('htmlEditorNewFileBtn').addEventListener('click', () => {
+        const name = prompt('Nome do arquivo (ex.: pagina.html, tema.css, app.js):', 'novo-arquivo.txt');
+        if (!name) return;
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        if (state.htmlEditor.files.some(file => file.name.toLowerCase() === trimmed.toLowerCase())) {
+          showToast('Já existe um arquivo com esse nome.');
+          return;
+        }
+        const ext = (trimmed.split('.').pop() || 'txt').toLowerCase();
+        const type = ['html','css','js','txt'].includes(ext) ? ext : 'txt';
+        const file = { id: trimmed + '-' + Date.now(), name: trimmed, type, content: '' };
+        state.htmlEditor.files.push(file);
+        state.htmlEditor.activeId = file.id;
+        persistHtmlEditorState();
+        renderHtmlEditor();
+      });
+      document.getElementById('htmlEditorExitBtn').addEventListener('click', () => {
+        closeWindow('htmleditor');
+      });
+
+      document.getElementById('htmlEditorDeleteBtn').addEventListener('click', () => {
+        const file = getActiveHtmlEditorFile();
+        if (!file) return;
+        if (state.htmlEditor.files.length <= 1) {
+          showToast('O projeto precisa ter pelo menos um arquivo.');
+          return;
+        }
+        if (!confirm(`Excluir ${file.name}?`)) return;
+        state.htmlEditor.files = state.htmlEditor.files.filter(item => item.id !== file.id);
+        state.htmlEditor.activeId = state.htmlEditor.files[0].id;
+        persistHtmlEditorState();
+        renderHtmlEditor();
+        runHtmlEditorPreview();
+      });
+      area.addEventListener('input', () => {
+        saveHtmlEditorCurrentBuffer();
+        const status = document.getElementById('htmlEditorStatus');
+        if (status) status.textContent = 'Alterações não salvas';
+      });
+      area.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = area.selectionStart;
+          const end = area.selectionEnd;
+          area.setRangeText('  ', start, end, 'end');
+          saveHtmlEditorCurrentBuffer();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          saveHtmlEditorCurrentBuffer();
+          persistHtmlEditorState();
+          const status = document.getElementById('htmlEditorStatus');
+          if (status) status.textContent = 'Arquivos salvos';
+          showToast('Projeto HTML salvo.');
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          runHtmlEditorPreview();
+        }
+      });
+      renderHtmlEditor();
+      runHtmlEditorPreview();
+    }
+
+
     window.addEventListener('error', (event) => {
       const status = document.getElementById('flStatus');
       if (status && event?.message) status.textContent = `Erro detectado: ${event.message}`;
@@ -3896,6 +4136,7 @@
         setupSearch();
         setupVideoEditor();
         setupFLStudio();
+        setupHtmlEditor();
         await setupImports();
         initWallpaper();
         bootToLogin();
